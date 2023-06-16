@@ -1,0 +1,34 @@
+# Common IntelliJ Platform excludes
+
+# User specific
+**/.idea/**/workspace.xml
+**/.idea/**/tasks.xml
+**/.idea/shelf/*
+**/.idea/dictionaries
+**/.idea/httpRequests/
+
+# Sensitive or high-churn files
+**/.idea/**/dataSources/
+**/.idea/**/dataSources.ids
+**/.idea/**/dataSources.xml
+**/.idea/**/dataSources.local.xml
+**/.idea/**/sqlDataSources.xml
+**/.idea/**/dynamic.xml
+
+# Rider
+# Rider auto-generates .iml files, and contentModel.xml
+**/.idea/**/*.iml
+**/.idea/**/contentModel.xml
+**/.idea/**/modules.xml
+
+placeholder-scada-back/*.suo
+placeholder-scada-back/*.user
+placeholder-scada-back/.vs/
+placeholder-scada-back/[Bb]in/
+placeholder-scada-back/[Oo]bj/
+placeholder-scada-back/_UpgradeReport_Files/
+placeholder-scada-back/[Pp]ackages/
+
+placeholder-scada-back/Thumbs.db
+placeholder-scada-back/Desktop.ini
+placeholder-scada-back/.DS_Store
