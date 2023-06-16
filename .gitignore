@@ -1,34 +1,24 @@
-# Common IntelliJ Platform excludes
-
-# User specific
-**/.idea/**/workspace.xml
-**/.idea/**/tasks.xml
-**/.idea/shelf/*
-**/.idea/dictionaries
-**/.idea/httpRequests/
-
-# Sensitive or high-churn files
-**/.idea/**/dataSources/
-**/.idea/**/dataSources.ids
-**/.idea/**/dataSources.xml
-**/.idea/**/dataSources.local.xml
-**/.idea/**/sqlDataSources.xml
-**/.idea/**/dynamic.xml
-
-# Rider
-# Rider auto-generates .iml files, and contentModel.xml
-**/.idea/**/*.iml
-**/.idea/**/contentModel.xml
-**/.idea/**/modules.xml
-
-placeholder-scada-back/*.suo
-placeholder-scada-back/*.user
-placeholder-scada-back/.vs/
-placeholder-scada-back/[Bb]in/
-placeholder-scada-back/[Oo]bj/
-placeholder-scada-back/_UpgradeReport_Files/
-placeholder-scada-back/[Pp]ackages/
-
-placeholder-scada-back/Thumbs.db
-placeholder-scada-back/Desktop.ini
-placeholder-scada-back/.DS_Store
+placeholder-scada-back/placeholder-scada-back/**/.idea/**/workspace.xml
+placeholder-scada-back/placeholder-scada-back/**/.idea/**/tasks.xml
+placeholder-scada-back/placeholder-scada-back/**/.idea/shelf/*
+placeholder-scada-back/placeholder-scada-back/**/.idea/dictionaries
+placeholder-scada-back/placeholder-scada-back/**/.idea/httpRequests/
+placeholder-scada-back/placeholder-scada-back/**/.idea/**/dataSources/
+placeholder-scada-back/placeholder-scada-back/**/.idea/**/dataSources.ids
+placeholder-scada-back/placeholder-scada-back/**/.idea/**/dataSources.xml
+placeholder-scada-back/placeholder-scada-back/**/.idea/**/dataSources.local.xml
+placeholder-scada-back/placeholder-scada-back/**/.idea/**/sqlDataSources.xml
+placeholder-scada-back/placeholder-scada-back/**/.idea/**/dynamic.xml
+placeholder-scada-back/placeholder-scada-back/**/.idea/**/*.iml
+placeholder-scada-back/placeholder-scada-back/**/.idea/**/contentModel.xml
+placeholder-scada-back/placeholder-scada-back/**/.idea/**/modules.xml
+placeholder-scada-back/placeholder-scada-back/*.suo
+placeholder-scada-back/placeholder-scada-back/*.user
+placeholder-scada-back/placeholder-scada-back/.vs/
+placeholder-scada-back/placeholder-scada-back/[Bb]in/
+placeholder-scada-back/placeholder-scada-back/[Oo]bj/
+placeholder-scada-back/placeholder-scada-back/_UpgradeReport_Files/
+placeholder-scada-back/placeholder-scada-back/[Pp]ackages/
+placeholder-scada-back/placeholder-scada-back/Thumbs.db
+placeholder-scada-back/placeholder-scada-back/Desktop.ini
+placeholder-scada-back/placeholder-scada-back/.DS_Store
