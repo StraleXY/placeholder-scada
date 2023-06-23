@@ -1,4 +1,7 @@
+using placeholder_scada_back.Context;
+using placeholder_scada_back.Services;
 using System.Text.Json.Serialization;
+using Microsoft.EntityFrameworkCore;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -16,11 +19,16 @@ builder.Services.AddControllers().AddJsonOptions(x =>
 
 //Repositories
 //builder.Services.AddTransient<IAntiTrollRepository, AntiTrollRepository>();
+builder.Services.AddTransient<IUserService, UserService>();
 
 // var connectionString = builder.Configuration.GetConnectionString("HealthCareConnection");
 // builder.Services.AddDbContext<HealthCareContext>(x => x.UseSqlServer(connectionString));
 // //builder.Services.AddDbContext<HealthCareContext>(x => x.UseQueryTrackingBehavior(QueryTrackingBehavior.NoTracking));
 // builder.Services.AddDbContext<HealthCareContext>(x => x.EnableSensitiveDataLogging());
+
+var connectionString = builder.Configuration.GetConnectionString("PlaceholderScadaConnection");
+builder.Services.AddDbContext<ScadaContext>(x => x.UseSqlServer(connectionString));
+builder.Services.AddDbContext<ScadaContext>(x => x.EnableSensitiveDataLogging());
 
 
 var app = builder.Build();
