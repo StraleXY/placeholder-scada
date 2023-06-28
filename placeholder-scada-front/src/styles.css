@@ -90,3 +90,8 @@ button:active {
     letter-spacing: 0.09em;
     font-size: 0.89em;
 }
+
+.value-text {
+    font-size: 2.5em;
+    font-weight: normal;
+}

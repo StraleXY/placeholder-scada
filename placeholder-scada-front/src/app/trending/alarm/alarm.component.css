@@ -1,0 +1,42 @@
+.alarm-contaioner {
+    height: 100%;
+    text-align: center;
+    border-radius: 16px;
+    position: relative;
+    border: 3px #c5c5c5 solid;
+}
+.priority-text {
+    background-color: #c5c5c5;
+    position: absolute;
+    width: 104%;
+    bottom: -1px;
+    left: -1px;
+    border-radius: 0 0 10px 10px;
+    padding: 4px;
+    z-index: 1;
+}
+
+.active-low {
+    color: #bb2020;
+}
+
+.active-high-border {
+    border-color: #bb2020;
+}
+.active-high-container {
+    background-color: #bb2020;
+    color: #fff;
+}
+.active-critical-container {
+    color: #fff;
+    animation: flashing-critical-container-alarm 0.5s infinite;
+}
+@keyframes flashing-critical-container-alarm {
+    from { background-color: #942f2f75; }
+    50% { background-color: #bb2020; }
+    to { background-color: #942f2f75; }
+}
+.active-critical-priority-text {
+    background-color: transparent;
+    color: #fff;
+}

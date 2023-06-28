@@ -1,12 +1,17 @@
 <div class="input-grid">
-
-    <div class="input-meta-data-container b">
-        <p>{{input.Description}}</p>
-
+    <div class="input-meta-data-container">
+        <p id="address-text">{{input.Address}}</p>
+        <h3 id="title-text">{{input.Description}}</h3>
+        <!-- <p>{{input.Address}}</p> -->
+        <div class="value-container">
+            <p class="value-text">{{input.CurrentValue}}</p>
+            <p id="unit-text">{{input.Units}}</p>
+        </div>
+        <p id="read-time-text">{{input.ReadTime}}</p>
     </div>
 
-    <div class="input-alarms-container b">
-
+    <div class="input-alarms-container">
+        <app-alarm *ngFor="let alarm of input.Alarms" [alarm]="alarm" [value]="input.CurrentValue"/>
     </div>
 
 </div>

@@ -1,0 +1,29 @@
+<div class="alarm-contaioner"
+    [ngClass]="{
+        'active-high-border' : isActive && (alarm.Priority == 2 || alarm.Priority == 3),
+        'active-critical-container' : isActive && alarm.Priority == 3
+    }">
+
+
+    <div style="padding: 20px 16px 16px 16px;">
+
+        <p [ngClass]="{'active-low' : isActive && (alarm.Priority == 1 || alarm.Priority == 2) }">
+            {{alarm.Type == 0 ? "BELOW" : "ABOVE"}}
+        </p>
+
+        <p class="value-text" 
+            [ngClass]="{'active-low' : isActive && (alarm.Priority == 1 || alarm.Priority == 2) }">
+            
+            {{alarm.Threshold}}
+        </p>
+
+        <p class="priority-text"
+            [ngClass]="{
+                'active-high-container' : isActive && alarm.Priority == 2,
+                'active-critical-priority-text' : isActive && alarm.Priority == 3
+            }">
+            {{alarm.Priority == 1 ? "LOW" : alarm.Priority == 2 ? "HIGH" : "CRITICAL"}}
+        </p>
+    </div>
+    
+</div>

@@ -10,17 +10,18 @@ export enum AlarmType {
 }
 
 export interface AnalogInput {
-    Id: number | 0,
+    Id: number,
     Description: string | null,
     Address: number,
     ScanTime: number,
+    IsOn: boolean,
+    CurrentValue: number,
+    ReadTime: string
+    
     LowLimit: number,
     HighLimit: number,
     Units: string | null,
     Alarms: Alarm[],
-    IsOn: boolean,
-    CurrentValue: number,
-    ReadTime: string
 }
 
 export interface DigitalInput {
