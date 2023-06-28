@@ -1,15 +1,16 @@
 .input-grid {
     display: grid;
-    grid-template-columns: 180px auto;
-    margin-bottom: 12px;
+    grid-template-columns: 280px auto;
+    margin-bottom: 6px;
 }
 .input-meta-data-container {
+    display: flex;
     text-align: center;
-    padding: 6px 19px 14px 19px;
+    padding: 4px 19px 2px 19px;
     border-radius: 16px;
     background-color: #cecece;
     position: relative;
-    box-shadow: 2px 5px 14px 0 rgba(0, 0, 0, 0.15);
+    box-shadow: 1px 3px 5px 0 rgba(0, 0, 0, 0.1);
     border: 2px #cacaca solid;
 }
 #address-text {
@@ -24,16 +25,17 @@
     color: #aaa;
     background-color: #eee;
 }
+.info-container {
+    margin-left: 22px;
+}
 #title-text {
     text-align: start;
-    margin-left: 22px;
 }
 .value-container {
     display: flex;
     justify-content: center;
     align-items: first baseline;
-    margin-bottom: 6px;
-    margin-top: 16px;
+    margin-left: 16px;
 }
 #unit-text {
     font-size: 1.75em;

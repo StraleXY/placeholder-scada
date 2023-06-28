@@ -5,16 +5,16 @@
     }">
 
 
-    <div style="padding: 20px 16px 16px 16px;">
+    <div style="padding: 0 8px 0 8px;">
 
-        <p [ngClass]="{'active-low' : isActive && (alarm.Priority == 1 || alarm.Priority == 2) }">
+        <!-- <p [ngClass]="{'active-low' : isActive && (alarm.Priority == 1 || alarm.Priority == 2) }">
             {{alarm.Type == 0 ? "BELOW" : "ABOVE"}}
-        </p>
+        </p> -->
 
         <p class="value-text" 
             [ngClass]="{'active-low' : isActive && (alarm.Priority == 1 || alarm.Priority == 2) }">
             
-            {{alarm.Threshold}}
+            {{alarm.Type == 0 ? "<" : ">"}} {{alarm.Threshold}}
         </p>
 
         <p class="priority-text"
