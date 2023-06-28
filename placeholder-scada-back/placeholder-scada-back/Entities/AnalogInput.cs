@@ -10,15 +10,9 @@ namespace placeholder_scada_back.Entities
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public int Id { get; set; }
 
-        [Column("tag_name")]
-        public int TagName { get; set; }
-
         [Column("description")]
         public string? Description { get; set; }
         
-        [Column("driver")]
-        public int Driver { get; set; }
-
         [Column("address")]
         public int Address { get; set; }
 
