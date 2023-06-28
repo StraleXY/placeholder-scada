@@ -17,8 +17,9 @@ namespace placeholder_scada_back.DTO
         public List<AlarmDto> Alarms { get; set; }
         public bool IsOn { get; set; }
         public float CurrentValue { get; set; }
+        public string ReadTime { get; set; }
 
-        public AnalogInputDto(AnalogInput analogInput, float currentValue) 
+        public AnalogInputDto(AnalogInput analogInput, float currentValue, string readTime) 
         {
             Id = analogInput.Id;
             Description = analogInput.Description;
@@ -37,6 +38,7 @@ namespace placeholder_scada_back.DTO
             }
             IsOn = analogInput.IsOn;
             CurrentValue = currentValue;
+            ReadTime = readTime;
         }
     }
 }

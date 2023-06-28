@@ -13,8 +13,9 @@ namespace placeholder_scada_back.DTO
         public float ScanTime { get; set; }
         public bool IsOn { get; set; }
         public bool CurrentValue { get; set; }
+        public string ReadTime { get; set; }
 
-        public DigitalInputDto(DigitalInput digitalInput, bool currentValue)
+        public DigitalInputDto(DigitalInput digitalInput, bool currentValue, string readTime)
         {
             Id = digitalInput.Id;
             Description = digitalInput.Description;
@@ -22,6 +23,7 @@ namespace placeholder_scada_back.DTO
             ScanTime = digitalInput.ScanTime;
             IsOn = digitalInput.IsOn;
             CurrentValue = currentValue;
+            ReadTime = readTime;
         }
     }
 }
