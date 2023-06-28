@@ -9,7 +9,7 @@ import { LoginService } from 'src/app/services/login.service';
 export class LoginPageComponent {
 
     constructor(private service: LoginService) {
-        // service.login({username: "strahinja", password: "12345678"}).subscribe((res) => console.log(res))
+        service.login({username: "strahinja", password: "12345678"}).subscribe((res) => console.log(res))
     }
 
 }

@@ -23,5 +23,8 @@ namespace placeholder_scada_back.Entities
 
         [Column("tag_id")]
         public int TagId { get; set; }
+        
+        [Column("threshold")]
+        public float Threshold { get; set; }
     }
 }

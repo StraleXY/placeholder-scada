@@ -13,6 +13,7 @@ namespace placeholder_scada_back.DTO
         public int Priority { get; set; }
         // Id of tag that contains this alarm
         public int TagId { get; set; }
+        public float Threshold { get; set; }
 
         public AlarmDto(Alarm alarm) 
         {
@@ -20,6 +21,7 @@ namespace placeholder_scada_back.DTO
             Type = alarm.Type == AlarmType.LOW ? 0 : 1;
             Priority = alarm.Priority;
             TagId = alarm.TagId;
+            Threshold = alarm.Threshold;
         }
     }
 }

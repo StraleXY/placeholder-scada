@@ -1,0 +1,16 @@
+.input-grid {
+    display: grid;
+    grid-template-columns: 1fr 4fr;
+}
+
+.input-meta-data-container {
+
+}
+
+.input-alarms-container {
+
+}
+
+.b {
+    border: 1px rgba(188, 143, 143, 0.281) solid;
+}
