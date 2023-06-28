@@ -19,9 +19,9 @@ public class UserController : ControllerBase
 
     [HttpPost]
     [Route("login")]
-    public async Task<ActionResult<UserDto>> Login(string username, string password)
+    public async Task<ActionResult<UserDto>> Login([FromBody] CreateUserDto createUserDto)
     {
-        User user = await UserService.Login(username, password);
+        User user = await UserService.Login(createUserDto);
         if (user == null)
         {
             return BadRequest(null);
@@ -34,8 +34,8 @@ public class UserController : ControllerBase
 
     [HttpPost]
     [Route("register")]
-    public async Task<ActionResult<bool>> Register(string username, string password)
+    public async Task<ActionResult<bool>> Register([FromBody] CreateUserDto createUserDto)
     {
-        return Ok(await UserService.Register(username, password));
+        return Ok(await UserService.Register(createUserDto));
     }
 }

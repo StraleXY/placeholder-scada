@@ -21,7 +21,7 @@ namespace placeholder_scada_back.Entities
         [Column("priority")]
         public int Priority { get; set; }
 
-        [Column("tag_name")]
-        public int TagName { get; set; }
+        [Column("tag_id")]
+        public int TagId { get; set; }
     }
 }
