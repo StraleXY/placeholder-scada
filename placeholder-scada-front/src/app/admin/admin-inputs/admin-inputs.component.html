@@ -1,0 +1,9 @@
+<div class="header-card-wrapper">
+    <div id="header">
+        <h2>Inputs</h2>
+        <button class="solid-button">NEW</button>
+    </div>
+    <div class="card">
+        <app-analog-input-info *ngFor="let item of items" [AnalogInputItem]="item"/>
+    </div>
+</div>

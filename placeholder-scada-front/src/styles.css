@@ -10,6 +10,13 @@
     height: 100vh;
     background-color: #e8e8e8;
 }
+.card {
+    background-color: #f8f8f8;
+    border-radius: 19px;
+    box-shadow: 1px 3px 8px 0 rgba(0, 0, 0, 0.1);
+    overflow-y: scroll;
+    overflow-x: hidden;
+}
 
 h1 {
     font-size: 3em;
@@ -19,6 +26,9 @@ h1 {
     color: #c0c0c0;
     user-select: none;
     animation: mymove 3s infinite;
+}
+h2 {
+    font-size: 1.75em;
 }
 @keyframes breathing-title {
     from { color: #c0c0c0; }
@@ -96,4 +106,43 @@ button:active {
     font-weight: normal;
     font-family: 'Economica';
     letter-spacing: -0.1rem;
+}
+
+.header-card-wrapper {
+    display: grid;
+    height: calc(100vh - 32px);
+    grid-template-rows: auto 1fr;
+}
+#header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    padding: 0 8px;
+}
+
+
+.b {
+    border: 1px rgba(188, 143, 143, 0.808) solid;
+}
+
+/* width */
+::-webkit-scrollbar {
+    width: 6px;
+}
+  
+/* Track */
+::-webkit-scrollbar-track {
+    background: transparent;
+    margin: 16px 0;
+}
+  
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #bbb;
+    border-radius: 3px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #999;
 }

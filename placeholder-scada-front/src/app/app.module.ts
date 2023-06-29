@@ -9,6 +9,10 @@ import { TrendingPageComponent } from './trending/trending-page/trending-page.co
 import { AnalogInputComponent } from './trending/analog-input/analog-input.component';
 import { AlarmComponent } from './trending/alarm/alarm.component';
 import { DigitalInputComponent } from './trending/digital-input/digital-input.component';
+import { AdminPageComponent } from './admin/admin-page/admin-page.component';
+import { AdminInputsComponent } from './admin/admin-inputs/admin-inputs.component';
+import { AdminOutputsComponent } from './admin/admin-outputs/admin-outputs.component';
+import { AnalogInputInfoComponent } from './admin/analog-input-info/analog-input-info.component';
 
 @NgModule({
   declarations: [
@@ -17,7 +21,11 @@ import { DigitalInputComponent } from './trending/digital-input/digital-input.co
     TrendingPageComponent,
     AnalogInputComponent,
     AlarmComponent,
-    DigitalInputComponent
+    DigitalInputComponent,
+    AdminPageComponent,
+    AdminInputsComponent,
+    AdminOutputsComponent,
+    AnalogInputInfoComponent
   ],
   imports: [
     BrowserModule,

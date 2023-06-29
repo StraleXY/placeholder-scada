@@ -1,0 +1,17 @@
+<div class="input-grid">
+    <div class="input-meta-data-container">
+        <p id="address-text">A{{input.Address}}</p>
+        <div class="info-container">
+            <h3 class="title-text">{{input.Description}}</h3>
+            <div>
+                <p id="info-text">Unit: {{input.Units}}</p>
+                <p id="info-text">Range: {{input.LowLimit}} - {{input.HighLimit}}</p>
+            </div>
+        </div>
+    </div>
+
+    <div class="input-alarms-container">
+        <app-alarm style="height: 56px;" *ngFor="let alarm of input.Alarms" [alarm]="alarm"/>
+    </div>
+
+</div>
