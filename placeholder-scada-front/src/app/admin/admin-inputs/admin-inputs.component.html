@@ -2,34 +2,36 @@
     <div id="header">
         <div class="header-left">
             <h2>Inputs</h2>
-            <div class="radio-inputs">
+            <div *ngIf="selectedInput == undefined" class="radio-inputs">
                 <label class="radio">
-                    <input type="radio" name="radio" checked="" (click)="toggleType(0)">
+                    <input type="radio" name="radio" [checked]="selectedType == 0" (click)="toggleType(0)">
                     <span class="name">ANALOG</span>
                 </label>
                 <label class="radio">
-                    <input type="radio" name="radio" (click)="toggleType(1)">
+                    <input type="radio" name="radio" [checked]="selectedType == 1" (click)="toggleType(1)">
                     <span class="name">DIGITAL</span>
                 </label>
             </div>
         </div>
-        <button class="solid-button" (click)="toggleAddEdit()">New</button>
+        <button class="solid-button" (click)="toggleAddEdit()">{{isPreview ? "New" : "Cancel"}}</button>
     </div>
     <div class="card">
         <div class="items-container" [ngClass]="{'hidden': !isPreview, 'visible': isPreview}">
-            <div *ngIf="selectedType == 0"> <app-analog-input-info *ngFor="let item of items.AnalogInputs" [AnalogInputItem]="item"/> </div>
-            <div class="digital-inputs-container" *ngIf="selectedType == 1"> <app-digital-input-info *ngFor="let item of items.DigitalInputs" [DigitalInputItem]="item"/> </div>
+            <div *ngIf="selectedType == 0"> <app-analog-input-info *ngFor="let item of items.AnalogInputs" [AnalogInputItem]="item" (click)="selectInput(item)"/> </div>
+            <div class="digital-inputs-container" *ngIf="selectedType == 1"> <app-digital-input-info *ngFor="let item of items.DigitalInputs" [DigitalInputItem]="item" (click)="selectInput(item)"/> </div>
         </div>
         <div class="add-edit-container" [ngClass]="{'hidden': isPreview, 'visible': !isPreview}">
             <h3>Basic info</h3>
-            <input placeholder="Name / Description"/>
-            <input placeholder="Scan Time [ms]" type="number"/>
+            <input placeholder="Name / Description" [(ngModel)]="name"/>
+            <input placeholder="Scan Time [ms]" type="number" [(ngModel)]="scanTime"/>
+
+            
 
             <h3 *ngIf="selectedType == 0">Units info</h3>
             <div class="analog-meta-data" *ngIf="selectedType == 0">
-                <input placeholder="From" type="number"/>
-                <input placeholder="To" type="number"/>
-                <input placeholder="Units"/>
+                <input placeholder="From" type="number" [(ngModel)]="unitsFrom"/>
+                <input placeholder="To" type="number" [(ngModel)]="unitsTo"/>
+                <input placeholder="Units" [(ngModel)]="unit"/>
             </div>
             
             <h3 *ngIf="selectedType == 0">Alarms</h3>
