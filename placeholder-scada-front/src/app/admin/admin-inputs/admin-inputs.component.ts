@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { AlarmType, AnalogInput, DigitalInput, InputType, TrendingState } from 'src/app/dto/dto';
+import { Alarm, AlarmType, AnalogInput, DigitalInput, InputType, TrendingState } from 'src/app/dto/dto';
 
 @Component({
   selector: 'app-admin-inputs',
@@ -23,6 +23,7 @@ export class AdminInputsComponent {
     unitsTo: string = ""
     unit: string = ""
     address: string = ""
+    alarms: Alarm[] = []
 
     addresses: number[] = []
 
@@ -58,6 +59,7 @@ export class AdminInputsComponent {
         this.unitsFrom = input["LowLimit"] != undefined ? input["LowLimit"] : ""
         this.unitsTo = input["HighLimit"] != undefined ? input["HighLimit"] : ""
         this.unit = input["Units"] != undefined ? input["Units"] : ""
+        this.alarms = input["Alarms"] != undefined ? input["Alarms"] : []
         this.addresses.push(Number(this.address))
         this.addresses.sort((a, b) => {
             if(Number(a) == Number(b)) return 0
@@ -74,6 +76,9 @@ export class AdminInputsComponent {
         this.address = value.toString()
         console.log(value);
     }
+    deleteAlarm(alarm: Alarm) {
+        this.alarms.splice(this.alarms.indexOf(alarm), 1)
+    }
     clearForm() {
         this.name = ""
         this.address = ""
@@ -81,6 +86,7 @@ export class AdminInputsComponent {
         this.unitsFrom = ""
         this.unitsTo = ""
         this.unit = ""
+        this.alarms = []
         this.generateAddresses()
     }
 

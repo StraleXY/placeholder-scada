@@ -1,4 +1,4 @@
-import { Component, Input } from '@angular/core';
+import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Alarm, AlarmType } from 'src/app/dto/dto';
 
 @Component({
@@ -25,5 +25,6 @@ export class AlarmComponent {
         ) this.isActive = true 
         else this.isActive = false
     }
+    @Output() onClick: EventEmitter<void> = new EventEmitter()
     isActive: boolean = false
 }

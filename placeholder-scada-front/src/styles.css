@@ -94,6 +94,20 @@ button:active {
     outline: #212121 2px solid;
 }
 
+.outlined-button {
+    height: 46px;
+    border-radius: 8px;
+    translate: 0 1px;
+    outline: #c0c0c0 2.25px solid;
+    background-color: transparent;
+}
+.outlined-button:hover {
+    background-color: #cecece;
+}
+.outlined-button:focus-visible {
+    outline: #212121 2px solid;
+}
+
 .text-button {
     background-color: transparent;
     letter-spacing: 0.09em;

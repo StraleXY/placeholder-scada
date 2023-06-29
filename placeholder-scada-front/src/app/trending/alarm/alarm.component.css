@@ -5,6 +5,10 @@
     border-radius: 8px;
     position: relative;
     border: 3px #c5c5c5 solid;
+    cursor: pointer;
+}
+.alarm-contaioner:hover {
+    scale: 1.02;
 }
 .priority-text {
     background-color: #c5c5c5;

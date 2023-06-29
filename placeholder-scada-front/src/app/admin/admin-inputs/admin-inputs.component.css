@@ -40,7 +40,13 @@
 h3 {
     padding: 8px 2px;
 }
-
+.input-alarms-container {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    position: relative;
+    margin-bottom: 20px;
+}
 
 .hidden {
     animation: hide 0.1s ease-out;

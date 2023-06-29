@@ -21,6 +21,8 @@
             <div class="digital-inputs-container" *ngIf="selectedType == 1"> <app-digital-input-info *ngFor="let item of items.DigitalInputs" [DigitalInputItem]="item" (click)="selectInput(item)"/> </div>
         </div>
         <div class="add-edit-container" [ngClass]="{'hidden': isPreview, 'visible': !isPreview}">
+
+            <!-- Basic Info -->
             <h3>Basic info</h3>
             <input placeholder="Name / Description" [(ngModel)]="name"/>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
@@ -28,14 +30,54 @@
                 <input placeholder="Scan Time [ms]" type="number" [(ngModel)]="scanTime"/>
             </div>
 
+            <!-- Units form -->
             <h3 *ngIf="selectedType == 0">Units info</h3>
             <div class="analog-meta-data" *ngIf="selectedType == 0">
                 <input placeholder="From" type="number" [(ngModel)]="unitsFrom"/>
                 <input placeholder="To" type="number" [(ngModel)]="unitsTo"/>
                 <input placeholder="Units" [(ngModel)]="unit"/>
             </div>
-            
-            <h3 *ngIf="selectedType == 0">Alarms</h3>
+
+            <!-- Alarms -->
+            <h3 *ngIf="selectedType == 0 && alarms.length != 0">Alarms</h3>
+            <div class="input-alarms-container">
+                <app-alarm style="height: 56px;" *ngFor="let alarm of alarms" [alarm]="alarm" (onClick)="deleteAlarm(alarm)"/>
+            </div>
+            <div *ngIf="selectedType == 0 && alarms.length < 5">
+                <h3>New Alarm</h3>
+                <div style="display: flex; gap: 10px; align-items: center; margin-bottom: 10px;">
+                    <!-- Type selector -->
+                    <div class="radio-inputs">
+                        <label class="radio">
+                            <input type="radio" name="type-radio" [checked]="true">
+                            <span class="name">ABOVE</span>
+                        </label>
+                        <label class="radio">
+                            <input type="radio" name="type-radio" [checked]="false">
+                            <span class="name">BELOVE</span>
+                        </label>
+                    </div>
+                    <!-- Priority selector -->
+                    <div class="radio-inputs" style="width: 250px;">
+                        <label class="radio">
+                            <input type="radio" name="priority-radio" [checked]="true">
+                            <span class="name">LOW</span>
+                        </label>
+                        <label class="radio">
+                            <input type="radio" name="priority-radio" [checked]="false">
+                            <span class="name">HIGH</span>
+                        </label>
+                        <label class="radio">
+                            <input type="radio" name="priority-radio" [checked]="false">
+                            <span class="name">CRITICAL</span>
+                        </label>
+                    </div>
+                </div>
+                <div style="display: grid; grid-template-columns: auto 100px; gap: 6px;">
+                    <input placeholder="Threshold" type="number"/>
+                    <button class="outlined-button">Create</button>
+                </div>
+            </div>
         </div>
 
     </div>
