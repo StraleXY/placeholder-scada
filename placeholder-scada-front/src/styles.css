@@ -14,8 +14,7 @@
     background-color: #f8f8f8;
     border-radius: 19px;
     box-shadow: 1px 3px 8px 0 rgba(0, 0, 0, 0.1);
-    overflow-y: scroll;
-    overflow-x: hidden;
+    height: calc(100vh - 84px);
 }
 
 h1 {
@@ -145,4 +144,49 @@ button:active {
 /* Handle on hover */
 ::-webkit-scrollbar-thumb:hover {
     background: #999;
+}
+
+
+/* Selector */
+.radio-inputs {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    border-radius: 19px;
+    background-color: #cecece;
+    box-sizing: border-box;
+    box-shadow: 0 0 0px 1px rgba(0, 0, 0, 0.06);
+    padding: 3px;
+    width: 175px;
+    height: 38px;
+    font-size: 0.9rem;
+    letter-spacing: 0.1em;
+}
+
+.radio-inputs .radio {
+    flex: 1 1 auto;
+    text-align: center;
+}
+
+.radio-inputs .radio input {
+    display: none;
+}
+
+.radio-inputs .radio .name {
+    display: flex;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    border-radius: 19px;
+    height: 32px;
+    border: none;
+    padding: .5rem 0;
+    color: rgba(51, 65, 85, 1);
+    transition: all .15s ease-in-out;
+}
+
+.radio-inputs .radio input:checked + .name {
+    background-color: #fff;
+    height: 32px;
+    font-weight: 800;
 }

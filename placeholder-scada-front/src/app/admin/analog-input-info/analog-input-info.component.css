@@ -1,7 +1,7 @@
 .input-grid {
     display: grid;
     grid-template-columns: 180px auto;
-    margin-bottom: 16px;
+    margin: 8px 0;
     padding: 0 16px;
     cursor: pointer;
     transition: all 0.05s;
@@ -21,9 +21,9 @@
 }
 #address-text {
     position: absolute;
-    top: 0;
-    left: 2px;
-    width: 112px;
+    top: 1px;
+    left: 1px;
+    width: 114px;
     height: 28px;
     border-radius: 13px 13px 0 0;
     font-weight: 500;

@@ -13,6 +13,7 @@ import { AdminPageComponent } from './admin/admin-page/admin-page.component';
 import { AdminInputsComponent } from './admin/admin-inputs/admin-inputs.component';
 import { AdminOutputsComponent } from './admin/admin-outputs/admin-outputs.component';
 import { AnalogInputInfoComponent } from './admin/analog-input-info/analog-input-info.component';
+import { DigitalInputInfoComponent } from './admin/digital-input-info/digital-input-info.component';
 
 @NgModule({
   declarations: [
@@ -25,7 +26,8 @@ import { AnalogInputInfoComponent } from './admin/analog-input-info/analog-input
     AdminPageComponent,
     AdminInputsComponent,
     AdminOutputsComponent,
-    AnalogInputInfoComponent
+    AnalogInputInfoComponent,
+    DigitalInputInfoComponent
   ],
   imports: [
     BrowserModule,

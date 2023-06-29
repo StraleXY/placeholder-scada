@@ -38,3 +38,7 @@ export interface TrendingState {
     AnalogInputs: AnalogInput[],
     DigitalInputs: DigitalInput[]
 }
+
+export enum InputType {
+    ANALOG, DIGITAL
+}
