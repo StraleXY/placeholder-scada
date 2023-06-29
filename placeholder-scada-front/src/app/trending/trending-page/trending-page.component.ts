@@ -19,32 +19,32 @@ export class TrendingPageComponent {
                 ScanTime: 500,
                 LowLimit: 10,
                 HighLimit: 50,
-                Units: "C",
+                Units: "kg/m^2",
                 Alarms: [
                     {
                         Id: 0,
                         Type: AlarmType.HIGH,
                         Priority: 1,
                         TagId: 0,
-                        Threshold: 24
+                        Threshold: 244
                     },
                     {
                         Id: 1,
                         Type: AlarmType.HIGH,
                         Priority: 1,
                         TagId: 0,
-                        Threshold: 28
+                        Threshold: 2834
                     },
                     {
                         Id: 2,
                         Type: AlarmType.HIGH,
                         Priority: 3,
                         TagId: 0,
-                        Threshold: 32
+                        Threshold: 322342
                     }
                 ],
                 IsOn: true,
-                CurrentValue: 24.3,
+                CurrentValue: 2443.3,
                 ReadTime: "17:24 30s 340ms"
             },
             {

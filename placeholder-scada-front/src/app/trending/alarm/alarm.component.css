@@ -1,5 +1,6 @@
 .alarm-contaioner {
     height: 100%;
+    min-width: 55px;
     text-align: center;
     border-radius: 8px;
     position: relative;
@@ -16,8 +17,16 @@
     z-index: 1;
     font-size: 0.8em;
 }
+.value-container {
+    display: flex;
+}
 .value-text {
     font-size: 1.5em;
+}
+.icon {
+    scale: 0.8;
+    margin-top: 2px;
+    margin-right: -2px;
 }
 
 .active-low {

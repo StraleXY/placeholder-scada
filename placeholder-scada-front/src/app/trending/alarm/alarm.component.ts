@@ -14,7 +14,11 @@ export class AlarmComponent {
         TagId: 0,
         Threshold: 0
     }
-    @Input() set value(value: number) {
+    @Input() set value(value: number | undefined) {
+        if(value == undefined) {
+            this.isActive = false
+            return
+        }
         if(
             (this.alarm.Type == AlarmType.LOW && this.alarm.Threshold > value) ||
             (this.alarm.Type == AlarmType.HIGH && this.alarm.Threshold < value)
