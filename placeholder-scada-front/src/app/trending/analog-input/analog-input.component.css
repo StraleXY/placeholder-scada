@@ -1,0 +1,68 @@
+.input-grid {
+    display: grid;
+    grid-template-columns: 340px auto;
+    margin-bottom: 10px;
+}
+.input-meta-data-container {
+    display: grid;
+    grid-template-columns: auto auto;
+    text-align: center;
+    height: 61px;
+    padding: 4px 19px 2px 19px;
+    border-radius: 16px;
+    background-color: #cecece;
+    position: relative;
+    box-shadow: 1px 3px 5px 0 rgba(0, 0, 0, 0.1);
+    border: 2px #cacaca solid;
+}
+#address-text {
+    position: absolute;
+    top: 7px;
+    left: 2px;
+    width: 55px;
+    height: 28px;
+    border-radius: 13px 13px 0 0;
+    font-weight: 500;
+    font-size: 1.2em;
+    color: #aaa;
+    background-color: #eee;
+    
+    transform-origin: 24px 25px;
+    transform: rotate(270deg);
+}
+.info-container {
+    margin-left: 22px;
+}
+.title-text {
+    text-align: start;
+}
+.value-container {
+    display: flex;
+    justify-content: end;
+    align-items: first baseline;
+    margin-left: 16px;
+}
+#unit-text {
+    font-size: 1.25em;
+    margin-left: 4px;
+    font-family: 'Economica';
+    letter-spacing: -0.075rem;
+}
+#read-time-text {
+    font-size: 1em;
+    opacity: 0.75;
+    font-weight: 500;
+    color: #666;
+    text-align: start;
+}
+
+.input-alarms-container {
+    margin-left: 10px;
+    display: flex;
+    gap: 8px;
+    position: relative;
+}
+
+.b {
+    border: 1px rgba(188, 143, 143, 0.808) solid;
+}

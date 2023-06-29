@@ -1,0 +1,99 @@
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+    font-family: 'Dosis';
+    font-weight: 500;
+}
+.body {
+    width: 100%;
+    height: 100vh;
+    background-color: #e8e8e8;
+}
+
+h1 {
+    font-size: 3em;
+    margin-bottom: 5px;
+    font-family: 'Dosis';
+    font-weight: bold;
+    color: #c0c0c0;
+    user-select: none;
+    animation: mymove 3s infinite;
+}
+@keyframes breathing-title {
+    from { color: #c0c0c0; }
+    50% { color: #a0a0a0; }
+    to { color: #c0c0c0; }
+}
+@keyframes mymove {
+    0% { -webkit-text-stroke: 1px #c0c0c0; }
+    30% { -webkit-text-stroke: 1px #c0c0c0; }
+    50% { -webkit-text-stroke: 1px #a0a0a0; }
+    70% { -webkit-text-stroke: 1px #c0c0c0; }
+    100% { -webkit-text-stroke: 1px #c0c0c0; }
+}
+
+input {
+    display: block;
+    outline: none;
+    width: 100%;
+    height: 48px;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    padding: 0px 15px;
+    border: #c0c0c0 2.25px solid;
+    color: #080808;
+    background-color: transparent;
+    transition: all 0.1s;
+    font-weight: bold;
+    font-size: 0.95em;
+    user-select: none;
+}
+input::placeholder { color: #b5b5b5; }
+input:focus { border: #212121 2.25px solid; }
+input:focus::placeholder { color: #212121; }
+input:hover:not(:focus) { border: #ababab 2.25px solid; }
+input:hover:not(:focus)::placeholder { color: #aeaeae; }
+
+button {
+    display: block; 
+    border: none;
+    letter-spacing: 0.1em;
+    transition: all 0.1s;
+    cursor: pointer;
+    text-transform: uppercase;
+    font-family: 'Roboto';
+    font-size: 0.9em;
+    user-select: none;
+}
+button:active {
+    scale: 0.98;
+}
+
+.solid-button {
+    height: 48px;
+    width: 100%;
+    border-radius: 8px;
+    margin-bottom: 8px;
+    background-color: #cecece;
+    color: #181818;
+}
+.solid-button:hover {
+    background-color: #c0c0c0;
+}
+.solid-button:focus-visible {
+    outline: #212121 2px solid;
+}
+
+.text-button {
+    background-color: transparent;
+    letter-spacing: 0.09em;
+    font-size: 0.89em;
+}
+
+.value-text {
+    font-size: 2.25em;
+    font-weight: normal;
+    font-family: 'Economica';
+    letter-spacing: -0.1rem;
+}

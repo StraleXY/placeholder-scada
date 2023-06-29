@@ -1,0 +1,24 @@
+<div class="alarm-contaioner"
+    [ngClass]="{
+        'active-high-border' : isActive && (alarm.Priority == 2 || alarm.Priority == 3),
+        'active-critical-container' : isActive && alarm.Priority == 3
+    }">
+
+
+    <div style="padding: 0 8px 0 0;">
+
+        <div class="value-container">
+            <span class="material-symbols-outlined icon"
+                [ngClass]="{'active-low' : isActive && (alarm.Priority == 1 || alarm.Priority == 2) }"> {{alarm.Type == 0 ? "south" : "north"}} </span>
+            <p class="value-text" 
+                [ngClass]="{'active-low' : isActive && (alarm.Priority == 1 || alarm.Priority == 2) }"> {{alarm.Threshold}} </p>
+        </div>
+
+        <p class="priority-text"
+            [ngClass]="{
+                'active-high-container' : isActive && alarm.Priority == 2,
+                'active-critical-priority-text' : isActive && alarm.Priority == 3}"> {{alarm.Priority == 1 ? "LOW" : alarm.Priority == 2 ? "HIGH" : "CRITICAL"}} </p>
+    
+    </div>
+    
+</div>

@@ -30,9 +30,22 @@ builder.Services.AddTransient<ITagService, TagService>();
 var connectionString = builder.Configuration.GetConnectionString("PlaceholderScadaConnection");
 builder.Services.AddDbContext<ScadaContext>(x => x.UseSqlServer(connectionString));
 builder.Services.AddDbContext<ScadaContext>(x => x.EnableSensitiveDataLogging());
-
+builder.Services.AddCors(feature =>
+    feature.AddPolicy(
+        "CorsPolicy",
+        apiPolicy => apiPolicy
+            //.AllowAnyOrigin()
+            //.WithOrigins("http://localhost:4200")
+            .AllowAnyHeader()
+            .AllowAnyMethod()
+            .SetIsOriginAllowed(host => true)
+            .AllowCredentials()
+    )
+);
 
 var app = builder.Build();
+
+
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
