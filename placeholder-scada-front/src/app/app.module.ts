@@ -8,6 +8,7 @@ import { LoginPageComponent } from './login/login-page/login-page.component';
 import { TrendingPageComponent } from './trending/trending-page/trending-page.component';
 import { AnalogInputComponent } from './trending/analog-input/analog-input.component';
 import { AlarmComponent } from './trending/alarm/alarm.component';
+import { DigitalInputComponent } from './trending/digital-input/digital-input.component';
 
 @NgModule({
   declarations: [
@@ -15,7 +16,8 @@ import { AlarmComponent } from './trending/alarm/alarm.component';
     LoginPageComponent,
     TrendingPageComponent,
     AnalogInputComponent,
-    AlarmComponent
+    AlarmComponent,
+    DigitalInputComponent
   ],
   imports: [
     BrowserModule,

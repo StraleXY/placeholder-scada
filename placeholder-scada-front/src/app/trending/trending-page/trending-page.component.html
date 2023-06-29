@@ -1,5 +1,10 @@
 <div class="body">
-    <div class="inputs-container">
+    <h2>Analog Inputs</h2>
+    <div class="grid-container">
         <app-analog-input *ngFor="let item of items.AnalogInputs" [AnalogInputItem]="item"/>
+    </div>
+    <h2>Digital Inputs</h2>
+    <div class="flex-container ">
+        <app-digital-input *ngFor="let item of items.DigitalInputs" [DigitalInputItem]="item"/>
     </div>
 </div>

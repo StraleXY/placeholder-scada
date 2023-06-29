@@ -633,129 +633,36 @@ export class TrendingPageComponent {
                 IsOn: true,
                 CurrentValue: 36.7,
                 ReadTime: "17:24 30s 440ms"
-            },
-            {
-                Id: 1,
-                Description: "Outside Temp",
-                Address: 1,
-                ScanTime: 500,
-                LowLimit: 10,
-                HighLimit: 50,
-                Units: "C",
-                Alarms: [
-                    {
-                        Id: 0,
-                        Type: AlarmType.LOW,
-                        Priority: 1,
-                        TagId: 1,
-                        Threshold: 24
-                    },
-                    {
-                        Id: 1,
-                        Type: AlarmType.HIGH,
-                        Priority: 2,
-                        TagId: 1,
-                        Threshold: 28
-                    },
-                    {
-                        Id: 2,
-                        Type: AlarmType.HIGH,
-                        Priority: 3,
-                        TagId: 1,
-                        Threshold: 30
-                    }
-                ],
-                IsOn: true,
-                CurrentValue: 36.7,
-                ReadTime: "17:24 30s 440ms"
-            },
-            {
-                Id: 1,
-                Description: "Outside Temp",
-                Address: 1,
-                ScanTime: 500,
-                LowLimit: 10,
-                HighLimit: 50,
-                Units: "C",
-                Alarms: [
-                    {
-                        Id: 0,
-                        Type: AlarmType.LOW,
-                        Priority: 1,
-                        TagId: 1,
-                        Threshold: 24
-                    },
-                    {
-                        Id: 1,
-                        Type: AlarmType.HIGH,
-                        Priority: 2,
-                        TagId: 1,
-                        Threshold: 28
-                    },
-                    {
-                        Id: 2,
-                        Type: AlarmType.HIGH,
-                        Priority: 3,
-                        TagId: 1,
-                        Threshold: 30
-                    }
-                ],
-                IsOn: true,
-                CurrentValue: 36.7,
-                ReadTime: "17:24 30s 440ms"
-            },
-            {
-                Id: 1,
-                Description: "Outside Temp",
-                Address: 1,
-                ScanTime: 500,
-                LowLimit: 10,
-                HighLimit: 50,
-                Units: "C",
-                Alarms: [
-                    {
-                        Id: 0,
-                        Type: AlarmType.LOW,
-                        Priority: 1,
-                        TagId: 1,
-                        Threshold: 24
-                    },
-                    {
-                        Id: 1,
-                        Type: AlarmType.HIGH,
-                        Priority: 2,
-                        TagId: 1,
-                        Threshold: 28
-                    },
-                    {
-                        Id: 2,
-                        Type: AlarmType.HIGH,
-                        Priority: 3,
-                        TagId: 1,
-                        Threshold: 30
-                    },
-                    {
-                        Id: 1,
-                        Type: AlarmType.HIGH,
-                        Priority: 2,
-                        TagId: 1,
-                        Threshold: 28
-                    },
-                    {
-                        Id: 2,
-                        Type: AlarmType.HIGH,
-                        Priority: 3,
-                        TagId: 1,
-                        Threshold: 30
-                    }
-                ],
-                IsOn: true,
-                CurrentValue: 36.7,
-                ReadTime: "17:24 30s 440ms"
             }
         ],
         DigitalInputs: [
-
+            {
+                Id: 1,
+                Description: "Outside Lights",
+                Address: 1,
+                ScanTime: 500,
+                IsOn: true,
+                CurrentValue: 1,
+                ReadTime: "17:24 30s 440ms"
+            },
+            {
+                Id: 1,
+                Description: "Inside Lights",
+                Address: 2,
+                ScanTime: 500,
+                IsOn: true,
+                CurrentValue: 0,
+                ReadTime: "17:24 30s 440ms"
+            },
+            {
+                Id: 1,
+                Description: "Security system made by SEcUrItAS",
+                Address: 3,
+                ScanTime: 500,
+                IsOn: true,
+                CurrentValue: 0,
+                ReadTime: "17:24 30s 440ms"
+            }
         ]
     }
 }

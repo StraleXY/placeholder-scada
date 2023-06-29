@@ -1,6 +1,15 @@
-.inputs-container {
+.body {
+    padding: 24px;
+}
+.grid-container {
     display: grid;
     grid-template-columns: 1fr 1fr;
     width: 100%;
-    padding: 24px;
+}
+.flex-container {
+    display: flex;
+    gap: 12px;
+}
+h2 {
+    padding: 6px 0 12px 4px;
 }
