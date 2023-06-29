@@ -20,6 +20,7 @@ builder.Services.AddControllers().AddJsonOptions(x =>
 //Repositories
 //builder.Services.AddTransient<IAntiTrollRepository, AntiTrollRepository>();
 builder.Services.AddTransient<IUserService, UserService>();
+builder.Services.AddTransient<ITagService, TagService>();
 
 // var connectionString = builder.Configuration.GetConnectionString("HealthCareConnection");
 // builder.Services.AddDbContext<HealthCareContext>(x => x.UseSqlServer(connectionString));
