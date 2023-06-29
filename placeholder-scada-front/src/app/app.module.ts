@@ -15,6 +15,7 @@ import { AdminInputsComponent } from './admin/admin-inputs/admin-inputs.componen
 import { AdminOutputsComponent } from './admin/admin-outputs/admin-outputs.component';
 import { AnalogInputInfoComponent } from './admin/analog-input-info/analog-input-info.component';
 import { DigitalInputInfoComponent } from './admin/digital-input-info/digital-input-info.component';
+import { SelectComponent } from './components/select/select.component';
 
 @NgModule({
   declarations: [
@@ -28,7 +29,8 @@ import { DigitalInputInfoComponent } from './admin/digital-input-info/digital-in
     AdminInputsComponent,
     AdminOutputsComponent,
     AnalogInputInfoComponent,
-    DigitalInputInfoComponent
+    DigitalInputInfoComponent,
+    SelectComponent
   ],
   imports: [
     BrowserModule,

@@ -23,9 +23,10 @@
         <div class="add-edit-container" [ngClass]="{'hidden': isPreview, 'visible': !isPreview}">
             <h3>Basic info</h3>
             <input placeholder="Name / Description" [(ngModel)]="name"/>
-            <input placeholder="Scan Time [ms]" type="number" [(ngModel)]="scanTime"/>
-
-            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
+                <app-select [items]="addresses" [selected]="address" (onSelected)="addressSelected($event)"/>
+                <input placeholder="Scan Time [ms]" type="number" [(ngModel)]="scanTime"/>
+            </div>
 
             <h3 *ngIf="selectedType == 0">Units info</h3>
             <div class="analog-meta-data" *ngIf="selectedType == 0">

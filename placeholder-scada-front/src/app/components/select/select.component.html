@@ -1,0 +1,8 @@
+<div>
+    <input #targetSpan style="cursor: pointer;" placeholder="Address" readonly (click)="toggleMenu()" [ngModel]="value"/>
+    <ul class="context-menu" [ngClass]="{'visible' : isMenuOpend}" [ngStyle]="{'transform': 'translateX(' + offsetX + 'px) translateY(' + offsetY + 'px)'}">
+        <li *ngFor="let item of items" (click)="onItemClicked(item)"><div>
+            <p>Address {{item}}</p>
+        </div></li>
+    </ul>
+</div>

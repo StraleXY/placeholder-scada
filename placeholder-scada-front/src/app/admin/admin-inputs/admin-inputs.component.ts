@@ -22,10 +22,12 @@ export class AdminInputsComponent {
     unitsFrom: string = ""
     unitsTo: string = ""
     unit: string = ""
+    address: string = ""
 
     addresses: number[] = []
 
     generateAddresses() {
+        this.addresses = []
         let takenAddresses: number[] = []
         this.items.AnalogInputs.forEach((input) => {
             takenAddresses.push(input.Address)
@@ -33,7 +35,7 @@ export class AdminInputsComponent {
         this.items.DigitalInputs.forEach((input) => {
             takenAddresses.push(input.Address)
         })
-        for(let i = 0; i < 20; i++) {
+        for(let i = 1; i <= 20; i++) {
             if(takenAddresses.indexOf(i) == -1) 
                 this.addresses.push(i)
         }
@@ -52,61 +54,38 @@ export class AdminInputsComponent {
 
         this.name = input["Description"]
         this.scanTime = input["ScanTime"]
+        this.address = input["Address"]
         this.unitsFrom = input["LowLimit"] != undefined ? input["LowLimit"] : ""
         this.unitsTo = input["HighLimit"] != undefined ? input["HighLimit"] : ""
         this.unit = input["Units"] != undefined ? input["Units"] : ""
+        this.addresses.push(Number(this.address))
+        this.addresses.sort((a, b) => {
+            if(Number(a) == Number(b)) return 0
+            else if (Number(a) > Number(b)) return 1
+            else return -1
+        })
 
         this.isPreview = false
         console.log(this.scanTime);
         console.log(input["LowLimit"]);
         console.log(input["HighLimit"]);
-    
+    }
+    addressSelected(value: number) {
+        this.address = value.toString()
+        console.log(value);
     }
     clearForm() {
         this.name = ""
+        this.address = ""
         this.scanTime = ""
         this.unitsFrom = ""
         this.unitsTo = ""
         this.unit = ""
+        this.generateAddresses()
     }
 
     items: TrendingState = {
         AnalogInputs: [
-            {
-                Id: 0,
-                Description: "Room Temp jkdashf kajdfh",
-                Address: 0,
-                ScanTime: 500,
-                LowLimit: 10,
-                HighLimit: 50,
-                Units: "kg/m^2",
-                Alarms: [
-                    {
-                        Id: 0,
-                        Type: AlarmType.HIGH,
-                        Priority: 1,
-                        TagId: 0,
-                        Threshold: 244
-                    },
-                    {
-                        Id: 1,
-                        Type: AlarmType.HIGH,
-                        Priority: 1,
-                        TagId: 0,
-                        Threshold: 2834
-                    },
-                    {
-                        Id: 2,
-                        Type: AlarmType.HIGH,
-                        Priority: 3,
-                        TagId: 0,
-                        Threshold: 322342
-                    }
-                ],
-                IsOn: true,
-                CurrentValue: 2443.3,
-                ReadTime: "17:24 30s 340ms"
-            },
             {
                 Id: 1,
                 Description: "Outside Temp",
