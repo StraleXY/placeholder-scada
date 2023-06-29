@@ -5,11 +5,19 @@ import { HttpClientModule } from '@angular/common/http';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { LoginPageComponent } from './login/login-page/login-page.component';
+import { TrendingPageComponent } from './trending/trending-page/trending-page.component';
+import { AnalogInputComponent } from './trending/analog-input/analog-input.component';
+import { AlarmComponent } from './trending/alarm/alarm.component';
+import { DigitalInputComponent } from './trending/digital-input/digital-input.component';
 
 @NgModule({
   declarations: [
     AppComponent,
-    LoginPageComponent
+    LoginPageComponent,
+    TrendingPageComponent,
+    AnalogInputComponent,
+    AlarmComponent,
+    DigitalInputComponent
   ],
   imports: [
     BrowserModule,

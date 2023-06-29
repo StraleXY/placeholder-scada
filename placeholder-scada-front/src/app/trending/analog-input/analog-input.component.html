@@ -1,0 +1,18 @@
+<div class="input-grid">
+    <div class="input-meta-data-container">
+        <p id="address-text">A{{input.Address}}</p>
+        <div class="info-container">
+            <h3 class="title-text">{{input.Description}}</h3>
+            <p id="read-time-text">{{input.ReadTime}}</p>
+        </div>
+        <div class="value-container">
+            <p class="value-text">{{input.CurrentValue}}</p>
+            <p id="unit-text">{{input.Units}}</p>
+        </div>
+    </div>
+
+    <div class="input-alarms-container">
+        <app-alarm *ngFor="let alarm of input.Alarms" [alarm]="alarm" [value]="input.CurrentValue"/>
+    </div>
+
+</div>
