@@ -10,13 +10,14 @@ export class AdminInputsComponent {
 
     constructor() {
         this.generateAddresses()
+        // TODO Backend call to get all inputs [Same state dto as in worker front]
     }
 
     isPreview: boolean = true
     selectedType: InputType = InputType.ANALOG
     selectedInput: AnalogInput | DigitalInput | undefined = undefined
 
-    // FoRm ;)
+    // Input FoRm ;)
     name: string = ""
     scanTime: string = ""
     unitsFrom: string = ""
@@ -40,19 +41,17 @@ export class AdminInputsComponent {
             if(takenAddresses.indexOf(i) == -1) 
                 this.addresses.push(i)
         }
-        console.log(this.addresses);
-    }
-    toggleAddEdit() {
-        this.isPreview = !this.isPreview
-        this.selectedInput = undefined
-        this.clearForm()
     }
     toggleType(type: number) {
         this.selectedType = type
     }
-    selectInput(input: any) {
+    toggleAdd() {
+        this.isPreview = !this.isPreview
+        this.selectedInput = undefined
+        this.clearForm()
+    }
+    toggleEdit(input: any) {
         this.selectedInput = input
-
         this.name = input["Description"]
         this.scanTime = input["ScanTime"]
         this.address = input["Address"]
@@ -68,16 +67,14 @@ export class AdminInputsComponent {
         })
 
         this.isPreview = false
-        console.log(this.scanTime);
-        console.log(input["LowLimit"]);
-        console.log(input["HighLimit"]);
+    }
+    closeForm() {
+        this.isPreview = true
+        this.selectedInput = undefined
+        this.clearForm()
     }
     addressSelected(value: number) {
         this.address = value.toString()
-        console.log(value);
-    }
-    deleteAlarm(alarm: Alarm) {
-        this.alarms.splice(this.alarms.indexOf(alarm), 1)
     }
     clearForm() {
         this.name = ""
@@ -87,7 +84,87 @@ export class AdminInputsComponent {
         this.unitsTo = ""
         this.unit = ""
         this.alarms = []
+        this.clearAlarmForm()
         this.generateAddresses()
+    }
+
+    // Alarm form :)
+    threshold: string = ""
+    selectedAlarmType: AlarmType = AlarmType.LOW 
+    selectedAlarmPriority: number = 1
+
+    clearAlarmForm() {
+        this.threshold = "",
+        this.selectedAlarmType = AlarmType.LOW
+        this.selectedAlarmPriority = 1
+    }
+    addAlarm() {
+        this.alarms.push({
+            Id: 0,
+            Type: this.selectedAlarmType,
+            Priority: this.selectedAlarmPriority,
+            TagId: this.selectedInput != undefined ? this.selectedInput["Id"] : 0,
+            Threshold: Number(this.threshold)
+        })
+        // TODO Backend call
+        this.clearAlarmForm()
+    }
+    deleteAlarm(alarm: Alarm) {
+        this.alarms.splice(this.alarms.indexOf(alarm), 1)
+        // TODO Backend call
+    }
+
+    saveInput() {
+        if (this.selectedInput != undefined) {
+            this.selectedInput.Description = this.name
+            this.selectedInput.Address = Number(this.address)
+            this.selectedInput.ScanTime = Number(this.scanTime)
+            if ((this.selectedInput as AnalogInput).LowLimit != undefined) {
+                (this.selectedInput as AnalogInput).LowLimit = Number(this.unitsFrom);
+                (this.selectedInput as AnalogInput).HighLimit = Number(this.unitsTo);
+                (this.selectedInput as AnalogInput).Units = this.unit;
+                (this.selectedInput as AnalogInput).Alarms = this.alarms;
+            }
+            this.closeForm()
+            return
+        }
+        if (this.selectedType == InputType.ANALOG) {
+            this.items.AnalogInputs.push({
+                Id: 0,
+                Description: this.name,
+                Address: Number(this.address),
+                ScanTime: Number(this.scanTime),
+                IsOn: true,
+                CurrentValue: Number(this.unitsFrom),
+                ReadTime: '',
+                LowLimit: Number(this.unitsFrom),
+                HighLimit: Number(this.unitsTo),
+                Units: this.unit,
+                Alarms: this.alarms
+            })
+            this.closeForm()
+            return
+        } else {
+            this.items.DigitalInputs.push({
+                Id: 0,
+                Description: this.name,
+                Address: Number(this.address),
+                ScanTime: Number(this.scanTime),
+                IsOn: true,
+                CurrentValue: 0,
+                ReadTime: ''
+            })
+            this.closeForm()
+            return
+        }
+        // TODO Backend call on each case
+    }
+
+    deleteInput() {
+        if (this.selectedType == InputType.ANALOG) this.items.AnalogInputs.splice(this.items.AnalogInputs.indexOf(this.selectedInput as AnalogInput), 1)
+        else this.items.DigitalInputs.splice(this.items.DigitalInputs.indexOf(this.selectedInput as DigitalInput), 1)
+        this.closeForm()
+        // TODO Backend call
     }
 
     items: TrendingState = {
