@@ -4,11 +4,11 @@
             <h2>Inputs</h2>
             <div *ngIf="selectedInput == undefined" class="radio-inputs">
                 <label class="radio">
-                    <input type="radio" name="radio" [checked]="selectedType == 0" (click)="toggleType(0)">
+                    <input type="radio" name="radio-input" [checked]="selectedType == 0" (click)="selectedType = 0">
                     <span class="name">ANALOG</span>
                 </label>
                 <label class="radio">
-                    <input type="radio" name="radio" [checked]="selectedType == 1" (click)="toggleType(1)">
+                    <input type="radio" name="radio-input" [checked]="selectedType == 1" (click)="selectedType = 1">
                     <span class="name">DIGITAL</span>
                 </label>
             </div>

@@ -1,0 +1,39 @@
+.input-meta-data-container {
+    display: grid;
+    grid-template-columns: auto auto;
+    text-align: center;
+    height: 61px;
+    padding: 4px 19px 2px 19px;
+    border-radius: 16px;
+    background-color: #cecece;
+    position: relative;
+    box-shadow: 1px 3px 5px 0 rgba(0, 0, 0, 0.1);
+    border: 2px #cacaca solid;
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: all 0.05s;
+}
+.input-meta-data-container:hover {
+    scale: 1.01;
+}
+#address-text {
+    position: absolute;
+    top: 7px;
+    left: 2px;
+    width: 55px;
+    height: 28px;
+    border-radius: 13px 13px 0 0;
+    font-weight: 500;
+    font-size: 1.2em;
+    color: #aaa;
+    background-color: #eee; 
+    transform-origin: 24px 25px;
+    transform: rotate(270deg);
+}
+.info-container {
+    margin-left: 26px;
+}
+.title-text {
+    margin-top: 11px;
+    text-align: start;
+}

@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { DigitalInput } from 'src/app/dto/dto';
+import { DigitalInput } from 'src/app/dto/InputDTOs';
 
 @Component({
   selector: 'app-digital-input',

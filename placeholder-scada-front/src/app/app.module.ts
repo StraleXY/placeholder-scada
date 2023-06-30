@@ -16,6 +16,8 @@ import { AdminOutputsComponent } from './admin/admin-outputs/admin-outputs.compo
 import { AnalogInputInfoComponent } from './admin/analog-input-info/analog-input-info.component';
 import { DigitalInputInfoComponent } from './admin/digital-input-info/digital-input-info.component';
 import { SelectComponent } from './components/select/select.component';
+import { AnalogOutputInfoComponent } from './admin/analog-output-info/analog-output-info.component';
+import { DigitalOutputInfoComponent } from './admin/digital-output-info/digital-output-info.component';
 
 @NgModule({
   declarations: [
@@ -30,7 +32,9 @@ import { SelectComponent } from './components/select/select.component';
     AdminOutputsComponent,
     AnalogInputInfoComponent,
     DigitalInputInfoComponent,
-    SelectComponent
+    SelectComponent,
+    AnalogOutputInfoComponent,
+    DigitalOutputInfoComponent
   ],
   imports: [
     BrowserModule,

@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { Alarm, AlarmType, AnalogInput, DigitalInput, InputType, TrendingState } from 'src/app/dto/dto';
+import { Alarm, AlarmType, AnalogInput, DigitalInput, InputType, TrendingState } from 'src/app/dto/InputDTOs';
 
 @Component({
   selector: 'app-admin-inputs',
@@ -41,9 +41,6 @@ export class AdminInputsComponent {
             if(takenAddresses.indexOf(i) == -1) 
                 this.addresses.push(i)
         }
-    }
-    toggleType(type: number) {
-        this.selectedType = type
     }
     toggleAdd() {
         this.isPreview = !this.isPreview

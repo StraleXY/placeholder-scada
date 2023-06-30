@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { DigitalInput } from 'src/app/dto/dto';
+import { DigitalInput } from 'src/app/dto/InputDTOs';
 
 @Component({
   selector: 'app-digital-input-info',
@@ -7,6 +7,7 @@ import { DigitalInput } from 'src/app/dto/dto';
   styleUrls: ['./digital-input-info.component.css']
 })
 export class DigitalInputInfoComponent {
+    
     @Input() set DigitalInputItem(item: DigitalInput) {
         this.input = item
     }

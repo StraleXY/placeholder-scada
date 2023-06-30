@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { AlarmType, TrendingState } from 'src/app/dto/dto';
+import { AlarmType, TrendingState } from 'src/app/dto/InputDTOs';
 
 @Component({
   selector: 'app-trending-page',

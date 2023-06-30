@@ -1,5 +1,5 @@
 import { Component, Input } from '@angular/core';
-import { AnalogInput } from 'src/app/dto/dto';
+import { AnalogInput } from 'src/app/dto/InputDTOs';
 
 @Component({
   selector: 'app-analog-input',
