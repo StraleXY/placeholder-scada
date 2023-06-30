@@ -32,6 +32,20 @@ public class TagController : ControllerBase
     }
 
     [HttpPut]
+    [Route("analog/input/{id}/scan")]
+    public async Task<ActionResult<AnalogInputDto>> OnOffScanAnalogInput([FromBody] bool scan, [FromRoute] int id)
+    {
+        try
+        {
+            return Ok(new AnalogInputDto(await TagService.OnOffScanAnalogInput(id, scan), 0, ""));
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [HttpPut]
     [Route("analog/input/{id}")]
     public async Task<ActionResult<AnalogInputDto>> CreateAnalogInput([FromBody] CreateAnalogInputDto dto, [FromRoute] int id)
     {
@@ -112,6 +126,20 @@ public class TagController : ControllerBase
         catch(Exception exception)
         {
             return BadRequest(exception.Message);
+        }
+    }
+
+    [HttpPut]
+    [Route("digital/input/{id}/scan")]
+    public async Task<ActionResult<DigitalInputDto>> OnOffScanDigitalInput([FromBody] bool scan, [FromRoute] int id)
+    {
+        try
+        {
+            return Ok(new DigitalInputDto(await TagService.OnOffScanDigitalInput(id, scan), false, ""));
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
         }
     }
 
@@ -210,6 +238,62 @@ public class TagController : ControllerBase
         catch(Exception exception)
         {
             return BadRequest(exception.Message);
+        }
+    }
+
+    [HttpGet]
+    [Route("analog/input")]
+    public async Task<ActionResult<List<AnalogInputDto>>> GetAnalogInputs()
+    {
+        try 
+        {
+            return Ok(await TagService.GetAnalogInputs());
+        }
+        catch(Exception exception)
+        {
+            return NotFound(exception.Message);
+        }
+    }
+
+    [HttpGet]
+    [Route("analog/output")]
+    public async Task<ActionResult<List<AnalogOutputDto>>> GetAnalogOutputs()
+    {
+        try
+        {
+            return Ok(await TagService.GetAnalogOutputs());
+        }
+        catch (Exception exception)
+        {
+            return NotFound(exception.Message);
+        }
+    }
+
+    [HttpGet]
+    [Route("digital/input")]
+    public async Task<ActionResult<List<DigitalInputDto>>> GetDigitalInputs()
+    {
+        try
+        {
+            return Ok(await TagService.GetDigitalInputs());
+        }
+        catch (Exception exception)
+        {
+            return NotFound(exception.Message);
+        }
+    }
+
+    [HttpGet]
+    [Route("digital/output")]
+    public async Task<ActionResult<List<DigitalOutputDto>>> GetDigitalOutputs()
+    {
+        try
+        {
+            return Ok(await TagService.GetDigitalOutputs());
+        }
+        catch (Exception exception)
+        {
+            return NotFound(exception.Message);
         }
     }
 }

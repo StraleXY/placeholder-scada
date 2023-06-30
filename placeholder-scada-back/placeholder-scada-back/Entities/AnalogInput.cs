@@ -3,6 +3,11 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace placeholder_scada_back.Entities
 {
+    public enum SimulationFunction
+    {
+        SINE, COSINE, RAMP
+    }
+
     [Table("analog_input")]
     public class AnalogInput
     {
@@ -17,13 +22,18 @@ namespace placeholder_scada_back.Entities
         public int Address { get; set; }
 
         [Column("scan_time")]
-        public float ScanTime { get; set; }
+        public int ScanTime { get; set; }
 
         [Column("alarms")]
         public List<Alarm>? Alarms { get; set; }
 
         [Column("is_on")]
         public bool IsOn { get; set; }
+
+        [Column("use_rtu")]
+        public bool UseRtu { get; set; }
+        [Column("function")]
+        public SimulationFunction Function { get; set; }
 
         [Column("low_limit")]
         public float LowLimit { get; set; }

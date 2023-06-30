@@ -9,12 +9,14 @@ namespace placeholder_scada_back.Services;
 public interface ITagService
 {
     Task<AnalogInput> CreateAnalogInput(CreateAnalogInputDto dto);
+    Task<AnalogInput> OnOffScanAnalogInput(int id, bool scan);
     Task<AnalogInput> UpdateAnalogInput(CreateAnalogInputDto dto, int id);
     Task<AnalogInput> DeleteAnalogInput(int id);
     Task<AnalogOutput> CreateAnalogOutput(CreateAnalogOutputDto dto);
     Task<AnalogOutput> UpdateAnalogOutput(CreateAnalogOutputDto dto, int id);
     Task<AnalogOutput> DeleteAnalogOutput(int id);
     Task<DigitalInput> CreateDigitalInput(CreateDigitalInputDto dto);
+    Task<DigitalInput> OnOffScanDigitalInput(int id, bool scan);
     Task<DigitalInput> UpdateDigitalInput(CreateDigitalInputDto dto, int id);
     Task<DigitalInput> DeleteDigitalInput(int id);
     Task<DigitalOutput> CreateDigitalOutput(CreateDigitalOutputDto dto);
@@ -23,6 +25,11 @@ public interface ITagService
 
     Task<Alarm> CreateAlarm(CreateAlarmDto dto);
     Task<Alarm> DeleteAlarm(int id);
+
+    Task<List<AnalogInputDto>> GetAnalogInputs();
+    Task<List<AnalogOutputDto>> GetAnalogOutputs();
+    Task<List<DigitalInputDto>> GetDigitalInputs();
+    Task<List<DigitalOutputDto>> GetDigitalOutputs();
 }
 
 public class TagService : ITagService
@@ -43,9 +50,20 @@ public class TagService : ITagService
         analogInput.HighLimit = dto.HighLimit;
         analogInput.LowLimit = dto.LowLimit;
         analogInput.ScanTime = dto.ScanTime;
+        analogInput.UseRtu = dto.UseRtu;
+        analogInput.Function = dto.Function.Equals("sin") ? SimulationFunction.SINE
+            : dto.Function.Equals("cos") ? SimulationFunction.COSINE : SimulationFunction.RAMP;
         EntityEntry<AnalogInput> result = await Context.AnalogInputs.AddAsync(analogInput);
         Context.SaveChanges();
         return result.Entity;
+    }
+    public async Task<AnalogInput> OnOffScanAnalogInput(int id, bool scan)
+    {
+        AnalogInput analogInput = await Context.AnalogInputs.FirstAsync(x => x.Id == id);
+        analogInput.IsOn = scan;
+        Context.AnalogInputs.Update(analogInput);
+        Context.SaveChanges();
+        return analogInput;
     }
     public async Task<AnalogInput> UpdateAnalogInput(CreateAnalogInputDto dto, int id)
     {
@@ -56,6 +74,9 @@ public class TagService : ITagService
         analogInput.HighLimit = dto.HighLimit;
         analogInput.LowLimit = dto.LowLimit;
         analogInput.ScanTime = dto.ScanTime;
+        analogInput.UseRtu = dto.UseRtu;
+        analogInput.Function = dto.Function.Equals("sin") ? SimulationFunction.SINE
+            : dto.Function.Equals("cos") ? SimulationFunction.COSINE : SimulationFunction.RAMP;
         Context.AnalogInputs.Update(analogInput);
         Context.SaveChanges();
         return analogInput;
@@ -110,10 +131,19 @@ public class TagService : ITagService
         digitalInput.Address = dto.Address;
         digitalInput.Description = dto.Description;
         digitalInput.ScanTime = dto.ScanTime;
+        digitalInput.UseRtu = dto.UseRtu;
         digitalInput.IsOn = true;
         EntityEntry<DigitalInput> result = await Context.DigitalInputs.AddAsync(digitalInput);
         Context.SaveChanges();
         return result.Entity;
+    }
+    public async Task<DigitalInput> OnOffScanDigitalInput(int id, bool scan)
+    {
+        DigitalInput digitalInput = await Context.DigitalInputs.FirstAsync(x => x.Id == id);
+        digitalInput.IsOn = scan;
+        Context.DigitalInputs.Update(digitalInput);
+        Context.SaveChanges();
+        return digitalInput;
     }
     public async Task<DigitalInput> UpdateDigitalInput(CreateDigitalInputDto dto, int id)
     {
@@ -121,7 +151,7 @@ public class TagService : ITagService
         digitalInput.Address = dto.Address;
         digitalInput.Description = dto.Description;
         digitalInput.ScanTime = dto.ScanTime;
-        digitalInput.IsOn = true;
+        digitalInput.UseRtu = dto.UseRtu;
         Context.DigitalInputs.Update(digitalInput);
         Context.SaveChanges();
         return digitalInput;
@@ -188,5 +218,49 @@ public class TagService : ITagService
         Context.Alarms.Remove(alarm);
         Context.SaveChanges();
         return alarm;
+    }
+
+    public async Task<List<AnalogInputDto>> GetAnalogInputs()
+    {
+        List<AnalogInput> analogInputs = await Context.AnalogInputs.ToListAsync();
+        List<AnalogInputDto> result = new List<AnalogInputDto>();
+        foreach (AnalogInput analogInput in analogInputs)
+        {
+            result.Add(new AnalogInputDto(analogInput, 0, ""));
+        }
+        return result;
+    }
+
+    public async Task<List<AnalogOutputDto>> GetAnalogOutputs()
+    {
+        List<AnalogOutput> analogOutputs = await Context.AnalogOutputs.ToListAsync();
+        List<AnalogOutputDto> result = new List<AnalogOutputDto>();
+        foreach (AnalogOutput analogOutput in analogOutputs)
+        {
+            result.Add(new AnalogOutputDto(analogOutput));
+        }
+        return result;
+    }
+
+    public async Task<List<DigitalInputDto>> GetDigitalInputs()
+    {
+        List<DigitalInput> digitalInputs = await Context.DigitalInputs.ToListAsync();
+        List<DigitalInputDto> result = new List<DigitalInputDto>();
+        foreach (DigitalInput digitalInput in digitalInputs)
+        {
+            result.Add(new DigitalInputDto(digitalInput, false, ""));
+        }
+        return result;
+    }
+
+    public async Task<List<DigitalOutputDto>> GetDigitalOutputs()
+    {
+        List<DigitalOutput> digitalOutputs = await Context.DigitalOutputs.ToListAsync();
+        List<DigitalOutputDto> result = new List<DigitalOutputDto>();
+        foreach (DigitalOutput digitalOutput in digitalOutputs)
+        {
+            result.Add(new DigitalOutputDto(digitalOutput));
+        }
+        return result;
     }
 }

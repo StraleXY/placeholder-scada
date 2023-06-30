@@ -10,6 +10,9 @@ public class ScadaContext : DbContext
     public DbSet<DigitalInput> DigitalInputs { get; set; }
     public DbSet<DigitalOutput> DigitalOutputs { get; set; }
     public DbSet<Alarm> Alarms { get; set; }
+    public DbSet<TriggeredAlarm> TriggeredAlarms { get; set; }
+    public DbSet<AnalogValue> AnalogValues { get; set; }
+    public DbSet<DigitalValue> DigitalValues { get; set; }
 
     public DbSet<User> Users { get; set; }
 

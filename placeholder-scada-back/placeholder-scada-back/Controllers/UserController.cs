@@ -21,10 +21,10 @@ public class UserController : ControllerBase
     [Route("login")]
     public async Task<ActionResult<UserDto>> Login([FromBody] CreateUserDto createUserDto)
     {
-        User user = await UserService.Login(createUserDto);
+        User? user = await UserService.Login(createUserDto);
         if (user == null)
         {
-            return BadRequest(null);
+            return BadRequest("Bad credentials!");
         }
         else
         {
@@ -36,6 +36,13 @@ public class UserController : ControllerBase
     [Route("register")]
     public async Task<ActionResult<bool>> Register([FromBody] CreateUserDto createUserDto)
     {
-        return Ok(await UserService.Register(createUserDto));
+        try
+        {
+            return Ok(await UserService.Register(createUserDto));
+        }
+        catch (Exception exception)
+        {
+            return BadRequest(exception.Message);
+        }
     }
 }
