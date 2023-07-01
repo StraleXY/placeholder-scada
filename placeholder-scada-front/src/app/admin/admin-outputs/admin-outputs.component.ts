@@ -69,7 +69,7 @@ export class AdminOutputsComponent {
     unitsTo: string = ""
     unit: string = ""
 
-    addresses: number[] = []
+    addresses: { label: string, value: any }[] = []
     generateAddresses() {
         this.addresses = []
         let takenAddresses: number[] = []
@@ -81,7 +81,7 @@ export class AdminOutputsComponent {
         })
         for(let i = 1; i <= 20; i++) {
             if(takenAddresses.indexOf(i) == -1) 
-                this.addresses.push(i)
+            this.addresses.push({ label: "Address " + i, value: i })
         }
     }
     
@@ -98,10 +98,10 @@ export class AdminOutputsComponent {
         this.unitsFrom = output["LowLimit"] != undefined ? output["LowLimit"] : ""
         this.unitsTo = output["HighLimit"] != undefined ? output["HighLimit"] : ""
         this.unit = output["Units"] != undefined ? output["Units"] : ""
-        this.addresses.push(Number(this.address))
+        this.addresses.push({label: "Address " + this.address, value: this.address})
         this.addresses.sort((a, b) => {
-            if(Number(a) == Number(b)) return 0
-            else if (Number(a) > Number(b)) return 1
+            if(Number(a.value) == Number(b.value)) return 0
+            else if (Number(a.value) > Number(b.value)) return 1
             else return -1
         })
 

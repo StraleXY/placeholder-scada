@@ -28,7 +28,7 @@
             <h3>Basic info</h3>
             <input placeholder="Name / Description" [(ngModel)]="name"/>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
-                <app-select [items]="addresses" [selected]="address" (onSelected)="address = $event.toString()"/>
+                <app-select [options]="addresses" [selected]="address" (onSelected)="address = $event.toString()"/>
                 <input placeholder="Initial Value" type="number" [(ngModel)]="initalValue"/>
             </div>
 

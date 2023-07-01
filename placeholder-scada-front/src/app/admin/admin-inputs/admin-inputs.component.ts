@@ -26,7 +26,7 @@ export class AdminInputsComponent {
     address: string = ""
     alarms: Alarm[] = []
 
-    addresses: number[] = []
+    addresses: { label: string, value: any }[] = []
 
     generateAddresses() {
         this.addresses = []
@@ -39,7 +39,7 @@ export class AdminInputsComponent {
         })
         for(let i = 1; i <= 20; i++) {
             if(takenAddresses.indexOf(i) == -1) 
-                this.addresses.push(i)
+                this.addresses.push({ label: "Address " + i, value: i })
         }
     }
     toggleAdd() {
@@ -56,10 +56,10 @@ export class AdminInputsComponent {
         this.unitsTo = input["HighLimit"] != undefined ? input["HighLimit"] : ""
         this.unit = input["Units"] != undefined ? input["Units"] : ""
         this.alarms = input["Alarms"] != undefined ? input["Alarms"] : []
-        this.addresses.push(Number(this.address))
+        this.addresses.push({label: "Address " + this.address, value: this.address})
         this.addresses.sort((a, b) => {
-            if(Number(a) == Number(b)) return 0
-            else if (Number(a) > Number(b)) return 1
+            if(Number(a.value) == Number(b.value)) return 0
+            else if (Number(a.value) > Number(b.value)) return 1
             else return -1
         })
 

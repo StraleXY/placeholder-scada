@@ -8,11 +8,16 @@ import { Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@
 export class SelectComponent {
 
     @Input() items: number[] = []
-    @Output() onSelected: EventEmitter<number> = new EventEmitter()
+    @Input() options: { label: string, value: any }[] = []
+    @Output() onSelected: EventEmitter<any> = new EventEmitter()
     
-    @Input() set selected(value: string) {
-        if(value == "") this.value = ""
-        else this.value = "Address " + value
+    @Input() set selected(value: any) {
+        console.log(typeof(value));
+        console.log(this.options);
+        console.log(this.options.find(val => val.value.toString() == value.toString()));
+        let found = this.options.find(val => val.value.toString() == value.toString())
+        if (found != undefined) this.value = found
+        else this.value = { label: "", value: "" }
     }
 
     isMenuOpend: boolean = false
@@ -22,7 +27,7 @@ export class SelectComponent {
     @ViewChild('targetSpan', { static: false })
     targetSpan!: ElementRef;
     
-    value: string = ""
+    value:  { label: string, value: any } = { label: "", value: "" }
     
     toggleMenu() {
         if(this.targetSpan.nativeElement.getBoundingClientRect().y > 500 && !this.isMenuOpend) this.offsetY = -300
@@ -30,9 +35,9 @@ export class SelectComponent {
         this.isMenuOpend = !this.isMenuOpend
     }
 
-    onItemClicked(item: number) {
+    onItemClicked(item:  { label: string, value: any }) {
         this.isMenuOpend = false
-        this.value = "Address " + item
-        this.onSelected.emit(item)
+        this.value = item
+        this.onSelected.emit(item.value)
     }
 }

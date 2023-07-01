@@ -26,7 +26,7 @@
             <h3>Basic info</h3>
             <input placeholder="Name / Description" [(ngModel)]="name"/>
             <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
-                <app-select [items]="addresses" [selected]="address" (onSelected)="addressSelected($event)"/>
+                <app-select [options]="addresses" [selected]="address" (onSelected)="addressSelected($event)"/>
                 <input placeholder="Scan Time [ms]" type="number" [(ngModel)]="scanTime"/>
             </div>
 
