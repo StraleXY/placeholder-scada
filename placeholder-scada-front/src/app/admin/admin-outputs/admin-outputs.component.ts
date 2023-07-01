@@ -14,10 +14,47 @@ export class AdminOutputsComponent {
     }
 
     saveOutput() {
-
+        if(this.selectedOutput != undefined) {
+            this.selectedOutput.Description = this.name
+            this.selectedOutput.Address = Number(this.address)
+            this.selectedOutput.InitialValue = Number(this.initalValue)
+            if ((this.selectedOutput as AnalogOutput).LowLimit != undefined) {
+                (this.selectedOutput as AnalogOutput).LowLimit = Number(this.unitsFrom);
+                (this.selectedOutput as AnalogOutput).HighLimit = Number(this.unitsTo);
+                (this.selectedOutput as AnalogOutput).Units = this.unit;
+            }
+            this.closeForm()
+            return
+        }
+        if(this.selectedType == InputType.ANALOG) {
+            this.analogItems.push({
+                Id: 0,
+                Description: this.name,
+                Address: Number(this.address),
+                InitialValue: Number(this.initalValue),
+                LowLimit: Number(this.unitsFrom),
+                HighLimit: Number(this.unitsTo),
+                Units: this.unit
+            })
+            this.closeForm()
+            return
+        } else {
+            this.digitalItems.push({
+                Id: 0,
+                Description: this.name,
+                Address: Number(this.address),
+                InitialValue: Number(this.initalValue)
+            })
+            this.closeForm()
+            return
+        }
+        // TODO Backend call on each case
     }
     deleteOutput() {
-
+        if (this.selectedType == InputType.ANALOG) this.analogItems.splice(this.analogItems.indexOf(this.selectedOutput as AnalogOutput), 1)
+        else this.digitalItems.splice(this.digitalItems.indexOf(this.selectedOutput as DigitalOutput), 1)
+        this.closeForm()
+        // TODO Backend call
     }
 
     isPreview: boolean = true
@@ -53,6 +90,23 @@ export class AdminOutputsComponent {
         this.selectedOutput = undefined
         this.clearForm()
     }
+    toggleEdit(output: any) {
+        this.selectedOutput = output
+        this.name = output["Description"]
+        this.address = output["Address"]
+        this.initalValue = output["InitialValue"] != undefined ? output["InitialValue"] : ""
+        this.unitsFrom = output["LowLimit"] != undefined ? output["LowLimit"] : ""
+        this.unitsTo = output["HighLimit"] != undefined ? output["HighLimit"] : ""
+        this.unit = output["Units"] != undefined ? output["Units"] : ""
+        this.addresses.push(Number(this.address))
+        this.addresses.sort((a, b) => {
+            if(Number(a) == Number(b)) return 0
+            else if (Number(a) > Number(b)) return 1
+            else return -1
+        })
+
+        this.isPreview = false
+    }
     clearForm() {
         this.name = ""
         this.address = ""
@@ -62,13 +116,19 @@ export class AdminOutputsComponent {
         this.unit = ""
         this.generateAddresses()
     }
+    closeForm() {
+        this.isPreview = true
+        this.selectedOutput = undefined
+        this.clearForm()
+    }
 
     analogItems: AnalogOutput[] = 
     [
         {
             Id: 0,
             Description: "Temperatura",
-            Address: 0,
+            Address: 1,
+            InitialValue: 0,
             LowLimit: -40,
             HighLimit: 90,
             Units: "C"
@@ -79,7 +139,8 @@ export class AdminOutputsComponent {
         {
             Id: 0,
             Description: "Not Temperatura",
-            Address: 1
+            Address: 2,
+            InitialValue: 0
         }
     ]
 }

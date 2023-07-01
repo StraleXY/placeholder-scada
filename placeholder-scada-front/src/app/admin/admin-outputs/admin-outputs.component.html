@@ -18,8 +18,8 @@
     <div class="card">
         <!-- Items -->
         <div class="items-container" [ngClass]="{'hidden': !isPreview, 'visible': isPreview}">
-            <div *ngIf="selectedType == 0"> <app-analog-output-info *ngFor="let item of analogItems" [Item]="item"/> </div>
-            <div class="digital-outputs-container" *ngIf="selectedType == 1"> <app-digital-output-info *ngFor="let item of digitalItems" [Item]="item"/> </div>
+            <div *ngIf="selectedType == 0"> <app-analog-output-info *ngFor="let item of analogItems" [Item]="item" (click)="toggleEdit(item)"/> </div>
+            <div class="digital-outputs-container" *ngIf="selectedType == 1"> <app-digital-output-info *ngFor="let item of digitalItems" [Item]="item" (click)="toggleEdit(item)"/> </div>
         </div>
         <!-- Add Edit -->
         <div class="add-edit-container" [ngClass]="{'hidden': isPreview, 'visible': !isPreview}">

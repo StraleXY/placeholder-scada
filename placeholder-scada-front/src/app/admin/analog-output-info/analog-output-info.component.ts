@@ -15,8 +15,9 @@ export class AnalogOutputInfoComponent {
         Id: 0,
         Description: "Temperatura",
         Address: 0,
+        InitialValue: 0,
         LowLimit: -40,
         HighLimit: 90,
-        Units: "C"
+        Units: "C",
     }
 }
