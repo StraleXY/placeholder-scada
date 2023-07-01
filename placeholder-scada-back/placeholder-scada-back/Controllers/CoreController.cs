@@ -57,4 +57,60 @@ public class CoreController : ControllerBase
             return NotFound(ex.Message);
         }
     }
+
+    [HttpPost]
+    [Route("rtu")]
+    public async Task<ActionResult<RealTimeUnitDto>> CreateRealTimeUnit([FromBody] CreateRealTimeUnitDto dto)
+    {
+        try
+        {
+            return Ok(new RealTimeUnitDto(await CoreService.CreateRealTimeUnit(dto)));
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [HttpPut]
+    [Route("rtu/{id}")]
+    public async Task<ActionResult<RealTimeUnitDto>> UpdateRealTimeUnit([FromBody] CreateRealTimeUnitDto dto, [FromRoute] int id)
+    {
+        try
+        {
+            return Ok(new RealTimeUnitDto(await CoreService.UpdateRealTimeUnit(dto, id)));
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [HttpDelete]
+    [Route("rtu/{id}")]
+    public async Task<ActionResult<RealTimeUnitDto>> DeleteRealTimeUnit([FromRoute] int id)
+    {
+        try
+        {
+            return Ok(new RealTimeUnitDto(await CoreService.DeleteRealTimeUnit(id)));
+        }
+        catch(Exception ex)
+        {
+            return BadRequest(ex.Message);
+        }
+    }
+
+    [HttpGet]
+    [Route("rtu")]
+    public async Task<ActionResult<List<RealTimeUnitDto>>> GetAllRealTimeUnits()
+    {
+        try
+        {
+            return Ok(await CoreService.GetAllRealTimeUnits());
+        }
+        catch(Exception ex)
+        {
+            return NotFound(ex.Message);
+        }
+    }
 }

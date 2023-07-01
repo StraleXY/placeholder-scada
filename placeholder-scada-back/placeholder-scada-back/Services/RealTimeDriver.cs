@@ -8,7 +8,8 @@ namespace placeholder_scada_back.Services;
 
 public interface IRealTimeDriver : IDriver
 {
-    void Init();
+    void Start();
+    void Stop();
     void RunRtu(AnalogOutput analogOutput);
     void RunRtu(DigitalOutput digitalOutput);
 }
@@ -25,10 +26,36 @@ public class RealTimeDriver : IRealTimeDriver
         AnalogTable = new float[21];
         DigitalTable = new bool[21];
         Rng = new Random();
+        Threads = new List<Thread>();
     }
 
     public float[] AnalogTable { get; set; }
     public bool[] DigitalTable { get; set; }
+
+    public List<Thread> Threads { get; set; }
+
+    public async void RealTimeUnitWorker(object? realTimeUnitObj)
+    {
+        RealTimeUnit? rtu = realTimeUnitObj as RealTimeUnit;
+        if (rtu != null)
+        {
+            while (true)
+            {
+                Thread.Sleep(rtu.WriteTime);
+                rtu = Context.RealTimeUnits.First(x => x.Id == rtu.Id);
+                if (rtu.IsAnalog)
+                {
+                    AnalogOutput analogOutput = Context.AnalogOutputs.First(x => x.Id == rtu.TagId);
+                    RunRtu(analogOutput);
+                }
+                else
+                {
+                    DigitalOutput digitalOutput = Context.DigitalOutputs.First(x => x.Id == rtu.TagId);
+                    RunRtu(digitalOutput);
+                }
+            }
+        }
+    }
 
     public async Task<float> GetAnalogInputValue(AnalogInput analogInput)
     {
@@ -40,7 +67,7 @@ public class RealTimeDriver : IRealTimeDriver
         return DigitalTable[digitalInput.Address];
     }
 
-    public void Init()
+    public void Start()
     {
         List<AnalogOutput> analogOutputs = Context.AnalogOutputs.ToList();
         foreach (AnalogOutput analogOutput in analogOutputs)
@@ -52,6 +79,18 @@ public class RealTimeDriver : IRealTimeDriver
         {
             DigitalTable[digitalOutput.Address] = digitalOutput.InitialValue;
         }
+        List<RealTimeUnit> rtus = Context.RealTimeUnits.ToList();
+        foreach (RealTimeUnit rtu in rtus)
+        {
+            Thread thread = new Thread(RealTimeUnitWorker);
+            thread.Start(rtu);
+            Threads.Add(thread);
+        }
+    }
+
+    public void Stop()
+    {
+        Threads.Clear();
     }
 
     public void RunRtu(AnalogOutput analogOutput)

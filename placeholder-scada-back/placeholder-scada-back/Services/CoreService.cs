@@ -11,6 +11,10 @@ public interface ICoreService
     Task<bool> StartSystem();
     Task<bool> StopSystem();
     Task<TrendingStateDto> GetTrendingState();
+    Task<RealTimeUnit> CreateRealTimeUnit(CreateRealTimeUnitDto dto);
+    Task<RealTimeUnit> UpdateRealTimeUnit(CreateRealTimeUnitDto dto, int id);
+    Task<RealTimeUnit> DeleteRealTimeUnit(int id);
+    Task<List<RealTimeUnitDto>> GetAllRealTimeUnits();
 }
 
 public class CoreService : ICoreService
@@ -133,31 +137,6 @@ public class CoreService : ICoreService
         }
     }
 
-    public async void AnalogOutputWorker(object? analogOutputObj)
-    {
-        AnalogOutput? analogOutput = analogOutputObj as AnalogOutput;
-        if (analogOutput != null)
-        {
-            while (true)
-            {
-                Thread.Sleep(3000);
-                RealTimeDriver.RunRtu(analogOutput);
-            }
-        }
-    }
-    public async void DigitalOutputWorker(object? digitalOutputObj)
-    {
-        DigitalOutput? digitalOutput = digitalOutputObj as DigitalOutput;
-        if (digitalOutput != null)
-        {
-            while (true)
-            {
-                Thread.Sleep(3000);
-                RealTimeDriver.RunRtu(digitalOutput);
-            }
-        }
-    }
-
     public void StartAnalogInput(AnalogInput analogInput)
     {
         Thread thread = new Thread(this.AnalogInputWorker);
@@ -168,18 +147,6 @@ public class CoreService : ICoreService
     {
         Thread thread = new Thread(this.DigitalInputWorker);
         thread.Start(digitalInput);
-        threads.Add(thread);
-    }
-    public void StartAnalogOutput(AnalogOutput analogOutput)
-    {
-        Thread thread = new Thread(this.AnalogOutputWorker);
-        thread.Start(analogOutput);
-        threads.Add(thread);
-    }
-    public void StartDigitalOutput(DigitalOutput digitalOutput)
-    {
-        Thread thread = new Thread(this.DigitalOutputWorker);
-        thread.Start(digitalOutput);
         threads.Add(thread);
     }
     private async void StartInputTags()
@@ -196,31 +163,17 @@ public class CoreService : ICoreService
         }
     }
 
-    private async void StartOutputTags()
-    {
-        RealTimeDriver.Init();
-        List<AnalogOutput> analogOutputs = await Context.AnalogOutputs.ToListAsync();
-        foreach (AnalogOutput analogOutput in analogOutputs)
-        {
-            StartAnalogOutput(analogOutput);
-        }
-        List<DigitalOutput> digitalOutputs = await Context.DigitalOutputs.ToListAsync();
-        foreach (DigitalOutput digitalOutput in digitalOutputs)
-        {
-            StartDigitalOutput(digitalOutput);
-        }
-    }
-
     public async Task<bool> StartSystem()
     {
         StartInputTags();
-        StartOutputTags();
+        RealTimeDriver.Start();
         return true;
     }
 
     public async Task<bool> StopSystem()
     {
         threads.Clear();
+        RealTimeDriver.Stop();
         return true;
     }
 
@@ -254,5 +207,46 @@ public class CoreService : ICoreService
             dto.DigitalInputs.Add(new DigitalInputDto(digitalInput, value, time));
         }
         return dto;
+    }
+
+    public async Task<RealTimeUnit> CreateRealTimeUnit(CreateRealTimeUnitDto dto)
+    {
+        RealTimeUnit rtu = new RealTimeUnit();
+        rtu.TagId = dto.TagId;
+        rtu.WriteTime = dto.WriteTime;
+        rtu.IsAnalog = dto.IsAnalog;
+        EntityEntry<RealTimeUnit> result = await Context.RealTimeUnits.AddAsync(rtu);
+        Context.SaveChanges();
+        return result.Entity;
+    }
+
+    public async Task<RealTimeUnit> UpdateRealTimeUnit(CreateRealTimeUnitDto dto, int id)
+    {
+        RealTimeUnit rtu = await Context.RealTimeUnits.FirstAsync(x => x.Id == id);
+        rtu.TagId = dto.TagId;
+        rtu.WriteTime = dto.WriteTime;
+        rtu.IsAnalog = dto.IsAnalog;
+        Context.RealTimeUnits.Update(rtu);
+        Context.SaveChanges();
+        return rtu;
+    }
+
+    public async Task<RealTimeUnit> DeleteRealTimeUnit(int id)
+    {
+        RealTimeUnit rtu = await Context.RealTimeUnits.FirstAsync(x => x.Id == id);
+        Context.RealTimeUnits.Remove(rtu);
+        Context.SaveChanges();
+        return rtu;
+    }
+
+    public async Task<List<RealTimeUnitDto>> GetAllRealTimeUnits()
+    {
+        List<RealTimeUnit> rtus = await Context.RealTimeUnits.ToListAsync();
+        List<RealTimeUnitDto> result = new List<RealTimeUnitDto>();
+        foreach (RealTimeUnit rtu in rtus)
+        {
+            result.Add(new RealTimeUnitDto(rtu));
+        }
+        return result;
     }
 }

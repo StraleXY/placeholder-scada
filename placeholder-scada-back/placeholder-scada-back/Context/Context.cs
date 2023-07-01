@@ -13,6 +13,7 @@ public class ScadaContext : DbContext
     public DbSet<TriggeredAlarm> TriggeredAlarms { get; set; }
     public DbSet<AnalogValue> AnalogValues { get; set; }
     public DbSet<DigitalValue> DigitalValues { get; set; }
+    public DbSet<RealTimeUnit> RealTimeUnits { get; set; }
 
     public DbSet<User> Users { get; set; }
 
