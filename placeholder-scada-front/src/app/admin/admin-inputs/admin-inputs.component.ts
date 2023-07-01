@@ -24,9 +24,15 @@ export class AdminInputsComponent {
     unitsTo: string = ""
     unit: string = ""
     address: string = ""
+    func: string = ""
     alarms: Alarm[] = []
 
     addresses: { label: string, value: any }[] = []
+    functions: { label: string, value: string }[] = [
+        { label: "Sinus Function", value: "sin" },
+        { label: "Cosinus Function", value: "cos" },
+        { label: "Ramp Function", value: "ramp" }
+    ]
 
     generateAddresses() {
         this.addresses = []
@@ -56,6 +62,7 @@ export class AdminInputsComponent {
         this.unitsTo = input["HighLimit"] != undefined ? input["HighLimit"] : ""
         this.unit = input["Units"] != undefined ? input["Units"] : ""
         this.alarms = input["Alarms"] != undefined ? input["Alarms"] : []
+        this.func = input["Function"] != undefined ? input["Function"] : ""
         this.addresses.push({label: "Address " + this.address, value: this.address})
         this.addresses.sort((a, b) => {
             if(Number(a.value) == Number(b.value)) return 0
@@ -121,6 +128,7 @@ export class AdminInputsComponent {
                 (this.selectedInput as AnalogInput).HighLimit = Number(this.unitsTo);
                 (this.selectedInput as AnalogInput).Units = this.unit;
                 (this.selectedInput as AnalogInput).Alarms = this.alarms;
+                (this.selectedInput as AnalogInput).Function = this.func
             }
             this.closeForm()
             return
@@ -134,6 +142,7 @@ export class AdminInputsComponent {
                 IsOn: true,
                 CurrentValue: Number(this.unitsFrom),
                 ReadTime: '',
+                Function: this.func,
                 LowLimit: Number(this.unitsFrom),
                 HighLimit: Number(this.unitsTo),
                 Units: this.unit,
@@ -197,6 +206,7 @@ export class AdminInputsComponent {
                         Threshold: 30
                     }
                 ],
+                Function: "sin",
                 IsOn: true,
                 CurrentValue: 36.7,
                 ReadTime: "17:24 30s 440ms"
@@ -235,6 +245,7 @@ export class AdminInputsComponent {
                         Threshold: 32
                     }
                 ],
+                Function: "sin",
                 IsOn: true,
                 CurrentValue: 24.3,
                 ReadTime: "17:24 30s 340ms"
@@ -270,6 +281,7 @@ export class AdminInputsComponent {
                         Threshold: 30
                     }
                 ],
+                Function: "sin",
                 IsOn: true,
                 CurrentValue: 36.7,
                 ReadTime: "17:24 30s 440ms"
@@ -304,6 +316,7 @@ export class AdminInputsComponent {
                         Threshold: 32
                     }
                 ],
+                Function: "sin",
                 IsOn: true,
                 CurrentValue: 24.3,
                 ReadTime: "17:24 30s 340ms"
@@ -339,6 +352,7 @@ export class AdminInputsComponent {
                         Threshold: 30
                     }
                 ],
+                Function: "sin",
                 IsOn: true,
                 CurrentValue: 36.7,
                 ReadTime: "17:24 30s 440ms"
@@ -373,6 +387,7 @@ export class AdminInputsComponent {
                         Threshold: 32
                     }
                 ],
+                Function: "sin",
                 IsOn: true,
                 CurrentValue: 24.3,
                 ReadTime: "17:24 30s 340ms"
@@ -408,6 +423,7 @@ export class AdminInputsComponent {
                         Threshold: 32
                     }
                 ],
+                Function: "sin",
                 IsOn: true,
                 CurrentValue: 24.3,
                 ReadTime: "17:24 30s 340ms"
@@ -443,6 +459,7 @@ export class AdminInputsComponent {
                         Threshold: 30
                     }
                 ],
+                Function: "sin",
                 IsOn: true,
                 CurrentValue: 36.7,
                 ReadTime: "17:24 30s 440ms"
@@ -491,6 +508,7 @@ export class AdminInputsComponent {
                         Threshold: 30
                     }
                 ],
+                Function: "sin",
                 IsOn: true,
                 CurrentValue: 24.3,
                 ReadTime: "17:24 30s 340ms"
@@ -526,6 +544,7 @@ export class AdminInputsComponent {
                         Threshold: 30
                     }
                 ],
+                Function: "sin",
                 IsOn: true,
                 CurrentValue: 36.7,
                 ReadTime: "17:24 30s 440ms"
@@ -561,6 +580,7 @@ export class AdminInputsComponent {
                         Threshold: 30
                     }
                 ],
+                Function: "sin",
                 IsOn: true,
                 CurrentValue: 36.7,
                 ReadTime: "17:24 30s 440ms"
@@ -596,6 +616,7 @@ export class AdminInputsComponent {
                         Threshold: 30
                     }
                 ],
+                Function: "sin",
                 IsOn: true,
                 CurrentValue: 36.7,
                 ReadTime: "17:24 30s 440ms"

@@ -1,6 +1,6 @@
 <div>
-    <input #targetSpan style="cursor: pointer;" placeholder="Address" readonly (click)="toggleMenu()" [ngModel]="value.label"/>
-    <ul class="context-menu" [ngClass]="{'visible' : isMenuOpend}" [ngStyle]="{'transform': 'translateX(' + offsetX + 'px) translateY(' + offsetY + 'px)'}">
+    <input #targetSpan style="cursor: pointer;" placeholder="{{label}}" readonly (click)="toggleMenu()" [ngModel]="value.label"/>
+    <ul class="context-menu" [ngClass]="{'visible' : isMenuOpend}" [ngStyle]="{'transform': 'translateX(' + offsetX + 'px) translateY(' + offsetY + 'px)'}" (mouseleave)="isMenuOpend = false">
         <li *ngFor="let option of options" (click)="onItemClicked(option)"><div>
             <p>{{option.label}}</p>
         </div></li>

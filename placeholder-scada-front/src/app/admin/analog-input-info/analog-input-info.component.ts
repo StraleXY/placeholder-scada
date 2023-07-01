@@ -23,6 +23,7 @@ export class AnalogInputInfoComponent {
         Alarms: [],
         IsOn: true,
         CurrentValue: 0,
+        Function: "sin",
         ReadTime: ""
     }
 }

@@ -21,6 +21,7 @@ export class AnalogInputComponent {
         HighLimit: 0,
         Units: "C",
         Alarms: [],
+        Function: "sin",
         IsOn: true,
         CurrentValue: 0,
         ReadTime: ""

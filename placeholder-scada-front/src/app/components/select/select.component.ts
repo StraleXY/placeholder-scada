@@ -7,6 +7,7 @@ import { Component, ElementRef, EventEmitter, Input, Output, ViewChild } from '@
 })
 export class SelectComponent {
 
+    @Input() label: string = "Address"
     @Input() items: number[] = []
     @Input() options: { label: string, value: any }[] = []
     @Output() onSelected: EventEmitter<any> = new EventEmitter()

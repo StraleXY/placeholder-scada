@@ -17,7 +17,7 @@ export interface AnalogInput {
     IsOn: boolean,
     CurrentValue: number,
     ReadTime: string
-    
+    Function: string
     LowLimit: number,
     HighLimit: number,
     Units: string | null,

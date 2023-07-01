@@ -43,6 +43,7 @@ export class TrendingPageComponent {
                         Threshold: 30
                     }
                 ],
+                Function: "sin",
                 IsOn: true,
                 CurrentValue: 36.7,
                 ReadTime: "17:24 30s 440ms"
@@ -81,6 +82,7 @@ export class TrendingPageComponent {
                         Threshold: 32
                     }
                 ],
+                Function: "sin",
                 IsOn: true,
                 CurrentValue: 24.3,
                 ReadTime: "17:24 30s 340ms"
@@ -116,6 +118,7 @@ export class TrendingPageComponent {
                         Threshold: 30
                     }
                 ],
+                Function: "sin",
                 IsOn: true,
                 CurrentValue: 36.7,
                 ReadTime: "17:24 30s 440ms"
@@ -150,6 +153,7 @@ export class TrendingPageComponent {
                         Threshold: 32
                     }
                 ],
+                Function: "sin",
                 IsOn: true,
                 CurrentValue: 24.3,
                 ReadTime: "17:24 30s 340ms"
@@ -185,6 +189,7 @@ export class TrendingPageComponent {
                         Threshold: 30
                     }
                 ],
+                Function: "sin",
                 IsOn: true,
                 CurrentValue: 36.7,
                 ReadTime: "17:24 30s 440ms"
@@ -219,6 +224,7 @@ export class TrendingPageComponent {
                         Threshold: 32
                     }
                 ],
+                Function: "sin",
                 IsOn: true,
                 CurrentValue: 24.3,
                 ReadTime: "17:24 30s 340ms"
@@ -254,6 +260,7 @@ export class TrendingPageComponent {
                         Threshold: 32
                     }
                 ],
+                Function: "sin",
                 IsOn: true,
                 CurrentValue: 24.3,
                 ReadTime: "17:24 30s 340ms"
@@ -289,6 +296,7 @@ export class TrendingPageComponent {
                         Threshold: 30
                     }
                 ],
+                Function: "sin",
                 IsOn: true,
                 CurrentValue: 36.7,
                 ReadTime: "17:24 30s 440ms"
@@ -337,6 +345,7 @@ export class TrendingPageComponent {
                         Threshold: 30
                     }
                 ],
+                Function: "sin",
                 IsOn: true,
                 CurrentValue: 24.3,
                 ReadTime: "17:24 30s 340ms"
@@ -372,6 +381,7 @@ export class TrendingPageComponent {
                         Threshold: 30
                     }
                 ],
+                Function: "sin",
                 IsOn: true,
                 CurrentValue: 36.7,
                 ReadTime: "17:24 30s 440ms"
@@ -407,6 +417,7 @@ export class TrendingPageComponent {
                         Threshold: 30
                     }
                 ],
+                Function: "sin",
                 IsOn: true,
                 CurrentValue: 36.7,
                 ReadTime: "17:24 30s 440ms"
@@ -442,6 +453,7 @@ export class TrendingPageComponent {
                         Threshold: 30
                     }
                 ],
+                Function: "sin",
                 IsOn: true,
                 CurrentValue: 36.7,
                 ReadTime: "17:24 30s 440ms"
