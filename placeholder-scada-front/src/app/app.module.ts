@@ -18,6 +18,7 @@ import { DigitalInputInfoComponent } from './admin/digital-input-info/digital-in
 import { SelectComponent } from './components/select/select.component';
 import { AnalogOutputInfoComponent } from './admin/analog-output-info/analog-output-info.component';
 import { DigitalOutputInfoComponent } from './admin/digital-output-info/digital-output-info.component';
+import { RtuComponent } from './admin/rtu/rtu.component';
 
 @NgModule({
   declarations: [
@@ -34,7 +35,8 @@ import { DigitalOutputInfoComponent } from './admin/digital-output-info/digital-
     DigitalInputInfoComponent,
     SelectComponent,
     AnalogOutputInfoComponent,
-    DigitalOutputInfoComponent
+    DigitalOutputInfoComponent,
+    RtuComponent
   ],
   imports: [
     BrowserModule,

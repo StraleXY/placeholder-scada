@@ -13,3 +13,9 @@ export interface DigitalOutput {
     Address: number,
     InitialValue : number,
 }
+export interface RealTimeUnit {
+    Id: number,
+    IsAnalog: boolean,
+    TagId: number,
+    WriteTime: number
+}
