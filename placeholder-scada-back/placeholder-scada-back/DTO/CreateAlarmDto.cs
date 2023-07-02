@@ -11,5 +11,6 @@ namespace placeholder_scada_back.DTO
         public int Priority { get; set; }
         // Id of tag that contains this alarm
         public int TagId { get; set; }
+        public float Threshold { get; set; }
     }
 }

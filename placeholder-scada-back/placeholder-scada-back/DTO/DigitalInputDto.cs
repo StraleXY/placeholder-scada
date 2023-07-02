@@ -10,8 +10,9 @@ namespace placeholder_scada_back.DTO
         public string? Description { get; set; }
         // Address tag is writing to (number from 1 to 20)
         public int Address { get; set; }
-        public float ScanTime { get; set; }
+        public int ScanTime { get; set; }
         public bool IsOn { get; set; }
+        public bool UseRtu { get; set; }
         public bool CurrentValue { get; set; }
         public string ReadTime { get; set; }
 
@@ -24,6 +25,7 @@ namespace placeholder_scada_back.DTO
             IsOn = digitalInput.IsOn;
             CurrentValue = currentValue;
             ReadTime = readTime;
+            UseRtu = digitalInput.UseRtu;
         }
     }
 }

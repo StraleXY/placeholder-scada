@@ -20,6 +20,11 @@ builder.Services.AddControllers().AddJsonOptions(x =>
 //Repositories
 //builder.Services.AddTransient<IAntiTrollRepository, AntiTrollRepository>();
 builder.Services.AddTransient<IUserService, UserService>();
+builder.Services.AddTransient<ITagService, TagService>();
+builder.Services.AddTransient<ICoreService, CoreService>();
+builder.Services.AddTransient<ISimulationDriver, SimulationDriver>();
+builder.Services.AddTransient<IRealTimeDriver, RealTimeDriver>();
+builder.Services.AddTransient<IReportService, ReportService>();
 
 // var connectionString = builder.Configuration.GetConnectionString("HealthCareConnection");
 // builder.Services.AddDbContext<HealthCareContext>(x => x.UseSqlServer(connectionString));
