@@ -20,6 +20,24 @@ export class RtuComponent {
             this.digitalItems = res
             this.generateOutputsList()
         })
+        this.tagService.analogOutputCreated.subscribe(o => {
+            this.analogItems.push(o)
+            this.generateOutputsList()
+        })
+        this.tagService.analogOutputDeleted.subscribe(o => {
+            this.analogItems.splice(this.analogItems.indexOf(o), 1)
+            if(this.selectedOutputId == o.id.toString()) this.selectedOutputId = ""
+            this.generateOutputsList()
+        })
+        this.tagService.digitalOutputCreated.subscribe(o => {
+            this.digitalItems.push(o)
+            this.generateOutputsList()
+        })
+        this.tagService.digitalOutputDeleted.subscribe(o => {
+            this.digitalItems.splice(this.digitalItems.indexOf(o), 1)
+            if(this.selectedOutputId == o.id.toString()) this.selectedOutputId = ""
+            this.generateOutputsList()
+        })
     }
     
     saveRTU() {
@@ -44,6 +62,5 @@ export class RtuComponent {
     }
 
     analogItems: AnalogOutput[] = []
-    
     digitalItems: DigitalOutput[] = []
 }

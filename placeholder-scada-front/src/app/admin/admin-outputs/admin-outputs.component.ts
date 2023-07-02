@@ -68,6 +68,7 @@ export class AdminOutputsComponent {
             }).subscribe((res) => {
                 console.log(res)
                 this.analogItems.push(res)
+                this.tagService.analogOutputCreated.emit(res)
             })
             this.closeForm()
             return
@@ -79,6 +80,7 @@ export class AdminOutputsComponent {
             }).subscribe((res) => {
                 console.log(res)
                 this.digitalItems.push(res)
+                this.tagService.digitalOutputCreated.emit(res)
             })
             this.closeForm()
             return
@@ -86,11 +88,11 @@ export class AdminOutputsComponent {
     }
     deleteOutput() {
         if (this.selectedType == InputType.ANALOG){
-            this.tagService.deleteAnalogOutput((this.selectedOutput as AnalogOutput).id).subscribe((res) => console.log(res))
+            this.tagService.deleteAnalogOutput((this.selectedOutput as AnalogOutput).id).subscribe((res) => this.tagService.analogOutputDeleted.emit(res))
             this.analogItems.splice(this.analogItems.indexOf(this.selectedOutput as AnalogOutput), 1)
         }
         else {
-            this.tagService.deleteDigitalOutput((this.selectedOutput as DigitalOutput).id).subscribe((res) => console.log(res))
+            this.tagService.deleteDigitalOutput((this.selectedOutput as DigitalOutput).id).subscribe((res) => this.tagService.digitalOutputDeleted.emit(res))
             this.digitalItems.splice(this.digitalItems.indexOf(this.selectedOutput as DigitalOutput), 1)
         }
         this.closeForm()

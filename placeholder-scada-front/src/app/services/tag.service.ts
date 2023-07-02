@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { EventEmitter, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Alarm, AnalogInput, CreateAlarm, CreateAnalogInput, CreateDigitalInput, DigitalInput } from '../dto/InputDTOs';
 import { environment } from '../environment';
@@ -11,6 +11,11 @@ import { AnalogOutput, CreateAnalogOutput, CreateDigitalOutput, DigitalOutput } 
 export class TagService {
 
   constructor(private http: HttpClient) { }
+
+  digitalOutputCreated: EventEmitter<DigitalOutput> = new EventEmitter()
+  digitalOutputDeleted: EventEmitter<DigitalOutput> = new EventEmitter()
+  analogOutputCreated: EventEmitter<AnalogOutput> = new EventEmitter()
+  analogOutputDeleted: EventEmitter<AnalogOutput> = new EventEmitter()
 
   // Inputs
 
