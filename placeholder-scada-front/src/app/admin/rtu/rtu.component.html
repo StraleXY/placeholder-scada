@@ -13,10 +13,11 @@
             <div class="rtu-meta-data-container">
                 <p id="address-text">A{{getOutput(rtu).address}}</p>
                 <div class="info-container">
-                    <h3 class="title-text b">{{getOutput(rtu).description}}</h3>
                     <div>
+                        <h3 class="title-text">{{getOutput(rtu).description}}</h3>
                         <p id="info-text">Write Time: {{rtu.writeTime}}</p>
                     </div>
+                    <span class="material-symbols-outlined icon" style="cursor: pointer;" (click)="deletRTU(rtu)">delete</span>
                 </div>
             </div>
         </div>

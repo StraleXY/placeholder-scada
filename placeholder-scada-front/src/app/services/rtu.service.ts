@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 import { CreateRealTimeUnit, RealTimeUnit } from '../dto/OutputDTOs';
 import { environment } from '../environment';
+import { animate } from '@angular/animations';
 
 @Injectable({
   providedIn: 'root'
@@ -19,4 +20,7 @@ export class RtuService {
         return this.http.get<RealTimeUnit[]>(`${environment.apiHost}/core/rtu`)
     }
     
+    deleteRtu(id: number) : Observable<any> {
+        return this.http.delete<any>(`${environment.apiHost}/core/rtu/${id}`)
+    }
 }

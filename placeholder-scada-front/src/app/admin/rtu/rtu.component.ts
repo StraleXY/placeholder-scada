@@ -21,7 +21,10 @@ export class RtuComponent {
             this.digitalItems = res
             this.generateOutputsList()
         })
-        this.rtuService.getAll().subscribe((res) => this.rtus = res)
+        this.rtuService.getAll().subscribe((res) => {
+            this.rtus = res
+            this.generateOutputsList()
+        })
 
         this.tagService.analogOutputCreated.subscribe(o => {
             this.analogItems.push(o)
@@ -49,7 +52,14 @@ export class RtuComponent {
             tagId: Number(this.selectedOutputId),
             writeTime: Number(this.writeTime)
         }).subscribe(res => {
-            
+            this.rtus.push(res)
+            this.generateOutputsList()
+        })
+    }
+    deletRTU(rtu: RealTimeUnit) {
+        this.rtus.splice(this.rtus.indexOf(rtu), 1)
+        this.rtuService.deleteRtu(rtu.id).subscribe((res) => {
+            this.generateOutputsList()
         })
     }
 
@@ -57,13 +67,19 @@ export class RtuComponent {
     outputs: { label: string, value: AnalogOutput | DigitalOutput }[] = []
     generateOutputsList() {
         this.outputs = []
-        this.analogItems.forEach(item => { if(item.description != null) this.outputs.push({ label: item.description, value: item }) })
-        this.digitalItems.forEach(item => { if(item.description != null) this.outputs.push({ label: item.description, value: item }) })
+        this.analogItems.forEach(item => { if(item.description != null && this.rtus.find(r => r.tagId == item.id) == undefined) this.outputs.push({ label: item.description, value: item }) })
+        this.digitalItems.forEach(item => { if(item.description != null && this.rtus.find(r => r.tagId == item.id) == undefined) this.outputs.push({ label: item.description, value: item }) })
+        this.clearForm()
     }
 
     selectedOutputId: string = ""
     isAnalog: boolean = false
     writeTime: string = ""
+    clearForm() {
+        this.selectedOutputId = ""
+        this.isAnalog = false
+        this.writeTime = ""
+    }
 
     setOutput(output: AnalogOutput | DigitalOutput) {
         this.selectedOutputId = output.id.toString()

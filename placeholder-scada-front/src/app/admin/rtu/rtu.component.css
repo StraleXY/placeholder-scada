@@ -43,8 +43,9 @@
 .info-container {
     height: 100%;
     margin-left: 24px;
-    padding: 6px 0;
-    display: flex;
+    display: grid;
+    grid-template-columns: auto 16px;
+    align-items: center;
     flex-direction: column;
     justify-content: space-between;
 }
@@ -53,7 +54,7 @@
     display: -webkit-box;
     -webkit-line-clamp: 1;
     -webkit-box-orient: vertical; 
-    width: 80%;
+    width: 100%;
     overflow: hidden;
 }
 #info-text {
