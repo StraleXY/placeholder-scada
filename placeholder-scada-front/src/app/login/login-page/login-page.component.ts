@@ -1,4 +1,5 @@
 import { Component } from '@angular/core';
+import { Router } from '@angular/router';
 import { LoginService } from 'src/app/services/login.service';
 
 @Component({
@@ -8,8 +9,21 @@ import { LoginService } from 'src/app/services/login.service';
 })
 export class LoginPageComponent {
 
-    constructor(private service: LoginService) {
-        service.login({username: "strahinja", password: "12345678"}).subscribe((res) => console.log(res))
+    username: string = ""
+    password: string = ""
+
+    constructor(private service: LoginService, private router: Router) {
+        //service.login({username: "strahinja", password: "12345678"}).subscribe((res) => console.log(res))
     }
 
+    onLogin(){
+      this.service.login({username: this.username, password: this.password}).subscribe((res) => {
+        console.log(res)
+        if (res['role'] === 'admin') {
+          this.router.navigate(["admin"])
+        }else{
+          this.router.navigate(["trending"])
+        }
+      })
+    }
 }

@@ -24,6 +24,7 @@ export class AnalogInputComponent {
         Function: "sin",
         IsOn: true,
         CurrentValue: 0,
-        ReadTime: ""
+        ReadTime: "",
+        UseRtu: false,
     }
 }

@@ -19,6 +19,7 @@ export class DigitalInputComponent {
         ScanTime: 0,
         IsOn: true,
         CurrentValue: 0,
-        ReadTime: ""
+        ReadTime: "",
+        UseRtu: false,
     }
 }

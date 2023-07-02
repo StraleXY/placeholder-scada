@@ -21,7 +21,18 @@ export interface AnalogInput {
     LowLimit: number,
     HighLimit: number,
     Units: string | null,
-    Alarms: Alarm[],
+    UseRtu: boolean,
+    Alarms: Alarm[]
+}
+
+export interface CreateAnalogInput {
+    Description: string | null,
+    Address: number,
+    ScanTime: number,
+    Function: string
+    LowLimit: number,
+    HighLimit: number,
+    Units: string | null
 }
 
 export interface DigitalInput {
@@ -31,7 +42,14 @@ export interface DigitalInput {
     ScanTime: number,
     IsOn: boolean,
     CurrentValue: number,
-    ReadTime: string
+    ReadTime: string,
+    UseRtu: boolean
+}
+
+export interface CreateDigitalInput {
+    Description: string | null,
+    Address: number,
+    ScanTime: number,
 }
 
 export interface TrendingState {
