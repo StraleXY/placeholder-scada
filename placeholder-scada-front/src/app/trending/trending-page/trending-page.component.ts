@@ -8,7 +8,14 @@ import { AlarmType, TrendingState } from 'src/app/dto/InputDTOs';
 })
 export class TrendingPageComponent {
 
-    // TODO - Populate the list with values
+
+    constructor() {
+        setInterval(function(){ 
+            
+            // TODO - Populate the list with values
+
+        }, 100);
+    }
 
     items: TrendingState = {analogInputs: [], digitalInputs: []}
     

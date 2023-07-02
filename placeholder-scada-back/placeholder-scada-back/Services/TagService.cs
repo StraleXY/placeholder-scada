@@ -167,7 +167,7 @@ public class TagService : ITagService
         DigitalOutput digitalOutput = new DigitalOutput();
         digitalOutput.Address = dto.Address;
         digitalOutput.Description = dto.Description;
-        digitalOutput.InitialValue = dto.InitialValue;
+        digitalOutput.InitialValue = dto.InitialValue == 1;
         EntityEntry<DigitalOutput> result = await Context.DigitalOutputs.AddAsync(digitalOutput);
         Context.SaveChanges();
         return result.Entity;
@@ -177,7 +177,7 @@ public class TagService : ITagService
         DigitalOutput digitalOutput = await Context.DigitalOutputs.FirstAsync(x => x.Id == id);
         digitalOutput.Address = dto.Address;
         digitalOutput.Description = dto.Description;
-        digitalOutput.InitialValue = dto.InitialValue;
+        digitalOutput.InitialValue = dto.InitialValue == 1;
         Context.DigitalOutputs.Update(digitalOutput);
         Context.SaveChanges();
         return digitalOutput;

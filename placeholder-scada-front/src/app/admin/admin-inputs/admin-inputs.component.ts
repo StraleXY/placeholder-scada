@@ -176,6 +176,7 @@ export class AdminInputsComponent {
             return
         }
         if (this.selectedType == InputType.ANALOG) {
+            let alarmsCopy = this.alarms
             this.tagService.createAnalogInput({
                 description: this.name,
                 address: Number(this.address),
@@ -186,11 +187,10 @@ export class AdminInputsComponent {
                 units: this.unit
             }).subscribe((res) => {
                 console.log(res)
-                this.alarms.forEach((alarm) => {
+                alarmsCopy.forEach((alarm) => {
                     alarm.tagId = res.id
                 })
-                res.alarms = this.alarms
-                //this.clearForm()
+                res.alarms = alarmsCopy
                 this.items.analogInputs.push(res)
                 res.alarms.forEach((alarm) => {
                     this.tagService.createAlarm({
@@ -201,6 +201,7 @@ export class AdminInputsComponent {
                     }).subscribe((res2) => console.log(res2))
                 })
             })
+            this.closeForm()
             return
         } else {
             this.tagService.createDigitalInput({

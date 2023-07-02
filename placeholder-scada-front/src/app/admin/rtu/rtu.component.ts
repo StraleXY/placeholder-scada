@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { AnalogOutput, DigitalOutput } from 'src/app/dto/OutputDTOs';
+import { TagService } from 'src/app/services/tag.service';
 
 @Component({
   selector: 'app-rtu',
@@ -8,8 +9,17 @@ import { AnalogOutput, DigitalOutput } from 'src/app/dto/OutputDTOs';
 })
 export class RtuComponent {
 
-    constructor() {
-        this.generateOutputsList()
+    constructor(private tagService: TagService) {
+        this.tagService.getAnalogOutputs().subscribe((res) => {
+            console.log(res)
+            this.analogItems = res
+            this.generateOutputsList()
+        })
+        this.tagService.getDigitalOutputs().subscribe((res) => {
+            console.log(res)
+            this.digitalItems = res
+            this.generateOutputsList()
+        })
     }
     
     saveRTU() {
@@ -20,8 +30,8 @@ export class RtuComponent {
     outputs: { label: string, value: AnalogOutput | DigitalOutput }[] = []
     generateOutputsList() {
         this.outputs = []
-        this.analogItems.forEach(item => { if(item.Description != null) this.outputs.push({ label: item.Description, value: item }) })
-        this.digitalItems.forEach(item => { if(item.Description != null) this.outputs.push({ label: item.Description, value: item }) })
+        this.analogItems.forEach(item => { if(item.description != null) this.outputs.push({ label: item.description, value: item }) })
+        this.digitalItems.forEach(item => { if(item.description != null) this.outputs.push({ label: item.description, value: item }) })
     }
 
     selectedOutputId: string = ""
@@ -29,29 +39,11 @@ export class RtuComponent {
     writeTime: string = ""
 
     setOutput(output: AnalogOutput | DigitalOutput) {
-        this.selectedOutputId = output.Id.toString()
-        this.isAnalog = (output as AnalogOutput)["LowLimit"] != undefined;
+        this.selectedOutputId = output.id.toString()
+        this.isAnalog = (output as AnalogOutput)["lowLimit"] != undefined;
     }
 
-    analogItems: AnalogOutput[] = 
-    [
-        {
-            Id: 0,
-            Description: "Temperatura",
-            Address: 1,
-            InitialValue: 0,
-            LowLimit: -40,
-            HighLimit: 90,
-            Units: "C"
-        }
-    ]
-    digitalItems: DigitalOutput[] = 
-    [
-        {
-            Id: 0,
-            Description: "Not Temperatura",
-            Address: 2,
-            InitialValue: 0
-        }
-    ]
+    analogItems: AnalogOutput[] = []
+    
+    digitalItems: DigitalOutput[] = []
 }

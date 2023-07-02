@@ -3,6 +3,7 @@ import { HttpClient } from '@angular/common/http';
 import { Alarm, AnalogInput, CreateAlarm, CreateAnalogInput, CreateDigitalInput, DigitalInput } from '../dto/InputDTOs';
 import { environment } from '../environment';
 import { Observable } from 'rxjs';
+import { AnalogOutput, CreateAnalogOutput, CreateDigitalOutput, DigitalOutput } from '../dto/OutputDTOs';
 
 @Injectable({
   providedIn: 'root'
@@ -10,6 +11,8 @@ import { Observable } from 'rxjs';
 export class TagService {
 
   constructor(private http: HttpClient) { }
+
+  // Inputs
 
   createAnalogInput(dto: CreateAnalogInput) : Observable<AnalogInput> {
     return this.http.post<AnalogInput>(`${environment.apiHost}/tag/analog/input`, dto)
@@ -58,5 +61,48 @@ export class TagService {
 
   deleteAlarm(id: number) : Observable<Alarm> {
     return this.http.delete<Alarm>(`${environment.apiHost}/tag/alarm/${id}`)
+  }
+
+
+  // Outputs
+  createAnalogOutput(dto: CreateAnalogOutput) : Observable<AnalogOutput> {
+    return this.http.post<AnalogOutput>(`${environment.apiHost}/tag/analog/output`, dto)
+  }
+
+  updateAnalogOutput(dto: CreateAnalogOutput, id: number) : Observable<AnalogOutput> {
+    return this.http.put<AnalogOutput>(`${environment.apiHost}/tag/analog/output/${id}`, dto)
+  }
+
+  turnScanOnOffAnalogOutput(scan: boolean, id: number) : Observable<AnalogOutput> {
+    return this.http.put<AnalogOutput>(`${environment.apiHost}/tag/analog/output/${id}/scan`, scan)
+  }
+
+  deleteAnalogOutput(id: number) : Observable<AnalogOutput> {
+    return this.http.delete<AnalogOutput>(`${environment.apiHost}/tag/analog/output/${id}`)
+  }
+
+  getAnalogOutputs() : Observable<AnalogOutput[]> {
+    return this.http.get<AnalogOutput[]>(`${environment.apiHost}/tag/analog/output`)
+  }
+
+  
+  createDigitalOutput(dto: CreateDigitalOutput) : Observable<DigitalOutput> {
+    return this.http.post<DigitalOutput>(`${environment.apiHost}/tag/digital/output`, dto)
+  }
+
+  updateDigitalOutput(dto: CreateDigitalOutput, id: number) : Observable<DigitalOutput> {
+    return this.http.put<DigitalOutput>(`${environment.apiHost}/tag/digital/output/${id}`, dto)
+  }
+
+  turnScanOnOffDigitalOutput(scan: boolean, id: number) : Observable<DigitalOutput> {
+    return this.http.put<DigitalOutput>(`${environment.apiHost}/tag/digital/output/${id}/scan`, scan)
+  }
+
+  deleteDigitalOutput(id: number) : Observable<DigitalOutput> {
+    return this.http.delete<DigitalOutput>(`${environment.apiHost}/tag/digital/output/${id}`)
+  }
+  
+  getDigitalOutputs() : Observable<DigitalOutput[]> {
+    return this.http.get<DigitalOutput[]>(`${environment.apiHost}/tag/digital/output`)
   }
 }

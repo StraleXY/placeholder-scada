@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { InputType } from 'src/app/dto/InputDTOs';
 import { AnalogOutput, DigitalOutput } from 'src/app/dto/OutputDTOs';
+import { TagService } from 'src/app/services/tag.service';
 
 @Component({
   selector: 'app-admin-outputs',
@@ -9,52 +10,90 @@ import { AnalogOutput, DigitalOutput } from 'src/app/dto/OutputDTOs';
 })
 export class AdminOutputsComponent {
 
-    constructor() {
-        this.generateAddresses()
+    constructor(private tagService: TagService) {
+        this.tagService.getAnalogOutputs().subscribe((res) => {
+            console.log(res)
+            this.analogItems = res
+            this.generateAddresses()
+        })
+        this.tagService.getDigitalOutputs().subscribe((res) => {
+            console.log(res)
+            this.digitalItems = res
+            this.generateAddresses()
+        })
     }
 
     saveOutput() {
         if(this.selectedOutput != undefined) {
-            this.selectedOutput.Description = this.name
-            this.selectedOutput.Address = Number(this.address)
-            this.selectedOutput.InitialValue = Number(this.initalValue)
-            if ((this.selectedOutput as AnalogOutput).LowLimit != undefined) {
-                (this.selectedOutput as AnalogOutput).LowLimit = Number(this.unitsFrom);
-                (this.selectedOutput as AnalogOutput).HighLimit = Number(this.unitsTo);
-                (this.selectedOutput as AnalogOutput).Units = this.unit;
+            this.selectedOutput.description = this.name
+            this.selectedOutput.address = Number(this.address)
+            this.selectedOutput.initialValue = Number(this.initalValue)
+            if ((this.selectedOutput as AnalogOutput).lowLimit != undefined) {
+                (this.selectedOutput as AnalogOutput).lowLimit = Number(this.unitsFrom);
+                (this.selectedOutput as AnalogOutput).highLimit = Number(this.unitsTo);
+                (this.selectedOutput as AnalogOutput).units = this.unit;
+            }
+            if ((this.selectedOutput as AnalogOutput).lowLimit != undefined){
+                this.tagService.updateAnalogOutput({
+                    description: this.selectedOutput.description,
+                    address: this.selectedOutput.address,
+                    initialValue: this.selectedOutput.initialValue,
+                    lowLimit: (this.selectedOutput as AnalogOutput).lowLimit,
+                    highLimit: (this.selectedOutput as AnalogOutput).highLimit,
+                    units: (this.selectedOutput as AnalogOutput).units
+                }, this.selectedOutput.id).subscribe((res) => {
+                    console.log(res)
+                })
+            }
+            else {
+                this.tagService.updateDigitalOutput({
+                    description: this.selectedOutput.description,
+                    address: this.selectedOutput.address,
+                    initialValue: this.selectedOutput.initialValue,
+                }, this.selectedOutput.id).subscribe((res) => {
+                    console.log(res)
+                })
             }
             this.closeForm()
             return
         }
         if(this.selectedType == InputType.ANALOG) {
-            this.analogItems.push({
-                Id: 0,
-                Description: this.name,
-                Address: Number(this.address),
-                InitialValue: Number(this.initalValue),
-                LowLimit: Number(this.unitsFrom),
-                HighLimit: Number(this.unitsTo),
-                Units: this.unit
+            this.tagService.createAnalogOutput({
+                description: this.name,
+                address: Number(this.address),
+                initialValue: Number(this.initalValue),
+                lowLimit: Number(this.unitsFrom),
+                highLimit: Number(this.unitsTo),
+                units: this.unit
+            }).subscribe((res) => {
+                console.log(res)
+                this.analogItems.push(res)
             })
             this.closeForm()
             return
         } else {
-            this.digitalItems.push({
-                Id: 0,
-                Description: this.name,
-                Address: Number(this.address),
-                InitialValue: Number(this.initalValue)
+            this.tagService.createDigitalOutput({
+                description: this.name,
+                address: Number(this.address),
+                initialValue: Number(this.initalValue),
+            }).subscribe((res) => {
+                console.log(res)
+                this.digitalItems.push(res)
             })
             this.closeForm()
             return
         }
-        // TODO Backend call on each case
     }
     deleteOutput() {
-        if (this.selectedType == InputType.ANALOG) this.analogItems.splice(this.analogItems.indexOf(this.selectedOutput as AnalogOutput), 1)
-        else this.digitalItems.splice(this.digitalItems.indexOf(this.selectedOutput as DigitalOutput), 1)
+        if (this.selectedType == InputType.ANALOG){
+            this.tagService.deleteAnalogOutput((this.selectedOutput as AnalogOutput).id).subscribe((res) => console.log(res))
+            this.analogItems.splice(this.analogItems.indexOf(this.selectedOutput as AnalogOutput), 1)
+        }
+        else {
+            this.tagService.deleteDigitalOutput((this.selectedOutput as DigitalOutput).id).subscribe((res) => console.log(res))
+            this.digitalItems.splice(this.digitalItems.indexOf(this.selectedOutput as DigitalOutput), 1)
+        }
         this.closeForm()
-        // TODO Backend call
     }
 
     isPreview: boolean = true
@@ -74,10 +113,10 @@ export class AdminOutputsComponent {
         this.addresses = []
         let takenAddresses: number[] = []
         this.analogItems.forEach((input) => {
-            takenAddresses.push(input.Address)
+            takenAddresses.push(input.address)
         })
         this.digitalItems.forEach((input) => {
-            takenAddresses.push(input.Address)
+            takenAddresses.push(input.address)
         })
         for(let i = 1; i <= 20; i++) {
             if(takenAddresses.indexOf(i) == -1) 
@@ -92,12 +131,12 @@ export class AdminOutputsComponent {
     }
     toggleEdit(output: any) {
         this.selectedOutput = output
-        this.name = output["Description"]
-        this.address = output["Address"]
-        this.initalValue = output["InitialValue"] != undefined ? output["InitialValue"] : ""
-        this.unitsFrom = output["LowLimit"] != undefined ? output["LowLimit"] : ""
-        this.unitsTo = output["HighLimit"] != undefined ? output["HighLimit"] : ""
-        this.unit = output["Units"] != undefined ? output["Units"] : ""
+        this.name = output["description"]
+        this.address = output["address"]
+        this.initalValue = output["initialValue"] != undefined ? output["initialValue"] : ""
+        this.unitsFrom = output["lowLimit"] != undefined ? output["lowLimit"] : ""
+        this.unitsTo = output["highLimit"] != undefined ? output["highLimit"] : ""
+        this.unit = output["units"] != undefined ? output["units"] : ""
         this.addresses.push({label: "Address " + this.address, value: this.address})
         this.addresses.sort((a, b) => {
             if(Number(a.value) == Number(b.value)) return 0
@@ -122,25 +161,6 @@ export class AdminOutputsComponent {
         this.clearForm()
     }
 
-    analogItems: AnalogOutput[] = 
-    [
-        {
-            Id: 0,
-            Description: "Temperatura",
-            Address: 1,
-            InitialValue: 0,
-            LowLimit: -40,
-            HighLimit: 90,
-            Units: "C"
-        }
-    ]
-    digitalItems: DigitalOutput[] = 
-    [
-        {
-            Id: 0,
-            Description: "Not Temperatura",
-            Address: 2,
-            InitialValue: 0
-        }
-    ]
+    analogItems: AnalogOutput[] = []
+    digitalItems: DigitalOutput[] = []
 }
