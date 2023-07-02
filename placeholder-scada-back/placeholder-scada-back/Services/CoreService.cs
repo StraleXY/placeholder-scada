@@ -23,13 +23,15 @@ public class CoreService : ICoreService
     public required ScadaContext Context { get; set; }
     public required ISimulationDriver SimulationDriver { get; set; }
     public required IRealTimeDriver RealTimeDriver { get; set; }
+    public required IServiceProvider Services { get; set; }
 
-    public CoreService(ScadaContext scadaContext, ISimulationDriver simulationDriver, IRealTimeDriver realTimeDriver)
+    public CoreService(ScadaContext scadaContext, ISimulationDriver simulationDriver, IRealTimeDriver realTimeDriver, IServiceProvider services)
     {
         Context = scadaContext;
         threads = new List<Thread>();
         SimulationDriver = simulationDriver;
         RealTimeDriver = realTimeDriver;
+        Services = services;
     }
 
     public List<Thread> threads { get; set; }
@@ -51,7 +53,7 @@ public class CoreService : ICoreService
         }
     }
 
-    private void TriggerAlarm(Alarm alarm, float value)
+    private void TriggerAlarm(Alarm alarm, float value, ScadaContext Context)
     {
         TriggeredAlarm triggeredAlarm = new TriggeredAlarm();
         triggeredAlarm.AlarmId = alarm.Id;
@@ -64,42 +66,48 @@ public class CoreService : ICoreService
 
     public async void AnalogInputWorker(object? analogInputObj)
     {
-        AnalogInput? analogInput = analogInputObj as AnalogInput;
-        if (analogInput != null)
+        using (var scope = Services.CreateScope())
         {
-            while (true)
-            {
-                Thread.Sleep(analogInput.ScanTime);
-                analogInput = Context.AnalogInputs.First(x => x.Id == analogInput.Id);
-                if (!analogInput.IsOn) continue;
+            var Context = scope.ServiceProvider.GetRequiredService<ScadaContext>();
 
-                AnalogValue analogValue = new AnalogValue();
-                analogValue.TagId = analogInput.Id;
-                analogValue.DateTime = DateTime.Now;
-                if (analogInput.UseRtu)
+            AnalogInput? analogInput = analogInputObj as AnalogInput;
+            if (analogInput != null)
+            {
+                while (true)
                 {
-                    analogValue.Value = await RealTimeDriver.GetAnalogInputValue(analogInput);
-                }
-                else
-                {
-                    analogValue.Value = await SimulationDriver.GetAnalogInputValue(analogInput);
-                }
-                Context.AnalogValues.Add(analogValue);
-                Context.SaveChanges();
-                List<Alarm> alarms = Context.Alarms.Where(x => x.TagId == analogInput.Id).ToList();
-                foreach (Alarm alarm in alarms)
-                {
-                    if (alarm.Type == AlarmType.HIGH)
+                    Thread.Sleep(analogInput.ScanTime);
+                    analogInput = Context.AnalogInputs.First(x => x.Id == analogInput.Id);
+                    if (!analogInput.IsOn) continue;
+
+                    AnalogValue analogValue = new AnalogValue();
+                    analogValue.TagId = analogInput.Id;
+                    analogValue.DateTime = DateTime.Now;
+                    if (analogInput.UseRtu)
                     {
-                        if (alarm.Threshold < analogValue.Value)
+                        analogValue.Value = await RealTimeDriver.GetAnalogInputValue(analogInput);
+                    }
+                    else
+                    {
+                        analogValue.Value = await SimulationDriver.GetAnalogInputValue(analogInput);
+                    }
+                    Context.AnalogValues.Add(analogValue);
+                    Context.SaveChanges();
+                    List<Alarm> alarms = Context.Alarms.Where(x => x.TagId == analogInput.Id).ToList();
+                    foreach (Alarm alarm in alarms)
+                    {
+                        if (alarm.Type == AlarmType.HIGH)
                         {
-                            TriggerAlarm(alarm, analogValue.Value);
+                            if (alarm.Threshold < analogValue.Value)
+                            {
+                                TriggerAlarm(alarm, analogValue.Value, Context);
+                            }
                         }
-                    } else
-                    {
-                        if (alarm.Threshold > analogValue.Value)
+                        else
                         {
-                            TriggerAlarm(alarm, analogValue.Value);
+                            if (alarm.Threshold > analogValue.Value)
+                            {
+                                TriggerAlarm(alarm, analogValue.Value, Context);
+                            }
                         }
                     }
                 }
@@ -109,28 +117,33 @@ public class CoreService : ICoreService
 
     public async void DigitalInputWorker(object? digitalInputObj)
     {
-        DigitalInput? digitalInput = digitalInputObj as DigitalInput;
-        if (digitalInput != null)
+        using (var scope = Services.CreateScope())
         {
-            while (true)
-            {
-                Thread.Sleep(digitalInput.ScanTime);
-                digitalInput = Context.DigitalInputs.First(x => x.Id == digitalInput.Id);
-                if (!digitalInput.IsOn) continue;
+            var Context = scope.ServiceProvider.GetRequiredService<ScadaContext>();
 
-                DigitalValue digitalValue = new DigitalValue();
-                digitalValue.TagId = digitalInput.Id;
-                digitalValue.DateTime = DateTime.Now;
-                if (digitalInput.UseRtu)
+            DigitalInput? digitalInput = digitalInputObj as DigitalInput;
+            if (digitalInput != null)
+            {
+                while (true)
                 {
-                    digitalValue.Value = await RealTimeDriver.GetDigitalInputValue(digitalInput);
+                    Thread.Sleep(digitalInput.ScanTime);
+                    digitalInput = Context.DigitalInputs.First(x => x.Id == digitalInput.Id);
+                    if (!digitalInput.IsOn) continue;
+
+                    DigitalValue digitalValue = new DigitalValue();
+                    digitalValue.TagId = digitalInput.Id;
+                    digitalValue.DateTime = DateTime.Now;
+                    if (digitalInput.UseRtu)
+                    {
+                        digitalValue.Value = await RealTimeDriver.GetDigitalInputValue(digitalInput);
+                    }
+                    else
+                    {
+                        digitalValue.Value = await SimulationDriver.GetDigitalInputValue(digitalInput);
+                    }
+                    Context.DigitalValues.Add(digitalValue);
+                    Context.SaveChanges();
                 }
-                else
-                {
-                    digitalValue.Value = await SimulationDriver.GetDigitalInputValue(digitalInput);
-                }
-                Context.DigitalValues.Add(digitalValue);
-                Context.SaveChanges();
             }
         }
     }
@@ -149,7 +162,7 @@ public class CoreService : ICoreService
     }
     private async void StartInputTags()
     {
-        List<AnalogInput> analogInputs = await Context.AnalogInputs.ToListAsync();
+        List<AnalogInput> analogInputs = Context.AnalogInputs.ToList();
         foreach (AnalogInput analogInput in analogInputs)
         {
             StartAnalogInput(analogInput);
@@ -163,6 +176,10 @@ public class CoreService : ICoreService
 
     public async Task<bool> StartSystem()
     {
+        if (threads.Count > 0)
+        {
+            return false;
+        }
         StartInputTags();
         RealTimeDriver.Start();
         return true;
@@ -178,7 +195,7 @@ public class CoreService : ICoreService
     public async Task<TrendingStateDto> GetTrendingState()
     {
         TrendingStateDto dto = new TrendingStateDto();
-        List<AnalogInput> analogInputs = await Context.AnalogInputs.ToListAsync();
+        List<AnalogInput> analogInputs = Context.AnalogInputs.ToList();
         foreach (AnalogInput analogInput in analogInputs)
         {
             AnalogValue? analogValue = Context.AnalogValues.OrderBy(x => x.DateTime).LastOrDefault(x => x.TagId == analogInput.Id);
@@ -192,7 +209,7 @@ public class CoreService : ICoreService
             List<Alarm> alarms = Context.Alarms.Where(x => x.TagId == analogInput.Id).ToList();
             dto.AnalogInputs.Add(new AnalogInputDto(analogInput, alarms, value, time));
         }
-        List<DigitalInput> digitalInputs = await Context.DigitalInputs.ToListAsync();
+        List<DigitalInput> digitalInputs = Context.DigitalInputs.ToList();
         foreach (DigitalInput digitalInput in digitalInputs)
         {
             DigitalValue? digitalValue = Context.DigitalValues.OrderBy(x => x.DateTime).LastOrDefault(x => x.TagId == digitalInput.Id);

@@ -19,14 +19,16 @@ public class RealTimeDriver : IRealTimeDriver
 
     public required ScadaContext Context { get; set; }
     public Random Rng { get; set; }
+    public required IServiceProvider Services { get; set; }
     
-    public RealTimeDriver(ScadaContext scadaContext)
+    public RealTimeDriver(ScadaContext scadaContext, IServiceProvider services)
     {
         Context = scadaContext;
         AnalogTable = new float[21];
         DigitalTable = new bool[21];
         Rng = new Random();
         Threads = new List<Thread>();
+        Services = services;
     }
 
     public float[] AnalogTable { get; set; }
@@ -36,22 +38,27 @@ public class RealTimeDriver : IRealTimeDriver
 
     public async void RealTimeUnitWorker(object? realTimeUnitObj)
     {
-        RealTimeUnit? rtu = realTimeUnitObj as RealTimeUnit;
-        if (rtu != null)
+        using (var scope = Services.CreateScope())
         {
-            while (true)
+            var Context = scope.ServiceProvider.GetRequiredService<ScadaContext>();
+
+            RealTimeUnit? rtu = realTimeUnitObj as RealTimeUnit;
+            if (rtu != null)
             {
-                Thread.Sleep(rtu.WriteTime);
-                rtu = Context.RealTimeUnits.First(x => x.Id == rtu.Id);
-                if (rtu.IsAnalog)
+                while (true)
                 {
-                    AnalogOutput analogOutput = Context.AnalogOutputs.First(x => x.Id == rtu.TagId);
-                    RunRtu(analogOutput);
-                }
-                else
-                {
-                    DigitalOutput digitalOutput = Context.DigitalOutputs.First(x => x.Id == rtu.TagId);
-                    RunRtu(digitalOutput);
+                    Thread.Sleep(rtu.WriteTime);
+                    rtu = Context.RealTimeUnits.First(x => x.Id == rtu.Id);
+                    if (rtu.IsAnalog)
+                    {
+                        AnalogOutput analogOutput = Context.AnalogOutputs.First(x => x.Id == rtu.TagId);
+                        RunRtu(analogOutput);
+                    }
+                    else
+                    {
+                        DigitalOutput digitalOutput = Context.DigitalOutputs.First(x => x.Id == rtu.TagId);
+                        RunRtu(digitalOutput);
+                    }
                 }
             }
         }
