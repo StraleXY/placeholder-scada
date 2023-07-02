@@ -10,8 +10,16 @@ import { TagService } from 'src/app/services/tag.service';
 export class AdminInputsComponent {
 
     constructor(private tagService: TagService) {
-        this.generateAddresses()
-        // TODO Backend call to get all inputs [Same state dto as in worker front]
+        this.tagService.getAnalogInputs().subscribe((res) => {
+            console.log(res)
+            this.items.analogInputs = res
+            this.generateAddresses()
+        })
+        this.tagService.getDigitalInputs().subscribe((res) => {
+            console.log(res)
+            this.items.digitalInputs = res
+            this.generateAddresses()
+        })
     }
 
     isPreview: boolean = true
@@ -55,15 +63,16 @@ export class AdminInputsComponent {
         this.clearForm()
     }
     toggleEdit(input: any) {
+        console.log(input);
         this.selectedInput = input
-        this.name = input["Description"]
-        this.scanTime = input["ScanTime"]
-        this.address = input["Address"]
-        this.unitsFrom = input["LowLimit"] != undefined ? input["LowLimit"] : ""
-        this.unitsTo = input["HighLimit"] != undefined ? input["HighLimit"] : ""
-        this.unit = input["Units"] != undefined ? input["Units"] : ""
-        this.alarms = input["Alarms"] != undefined ? input["Alarms"] : []
-        this.func = input["Function"] != undefined ? input["Function"] : ""
+        this.name = input["description"]
+        this.scanTime = input["scanTime"]
+        this.address = input["address"]
+        this.unitsFrom = input["lowLimit"] != undefined ? input["lowLimit"] : ""
+        this.unitsTo = input["highLimit"] != undefined ? input["highLimit"] : ""
+        this.unit = input["units"] != undefined ? input["units"] : ""
+        this.alarms = input["alarms"] != undefined ? input["alarms"] : []
+        this.func = input["function"] != undefined ? input["function"] : ""
         this.addresses.push({label: "Address " + this.address, value: this.address})
         this.addresses.sort((a, b) => {
             if(Number(a.value) == Number(b.value)) return 0
@@ -111,12 +120,22 @@ export class AdminInputsComponent {
             tagId: this.selectedInput != undefined ? this.selectedInput["id"] : 0,
             threshold: Number(this.threshold)
         })
-        // TODO Backend call
+        let alarm: Alarm = this.alarms[this.alarms.length-1]
+        if (this.selectedInput != undefined) {
+            this.tagService.createAlarm({
+                type: alarm.type == AlarmType.LOW ? 0 : 1,
+                priority: alarm.priority,
+                tagId: alarm.tagId,
+                threshold: alarm.threshold
+            }).subscribe((res) => console.log(res))
+        }
         this.clearAlarmForm()
     }
     deleteAlarm(alarm: Alarm) {
         this.alarms.splice(this.alarms.indexOf(alarm), 1)
-        // TODO Backend call
+        if (this.selectedInput != undefined) {
+            this.tagService.deleteAlarm(alarm.id).subscribe((res) => console.log(res))
+        }
     }
 
     saveInput() {
@@ -130,6 +149,28 @@ export class AdminInputsComponent {
                 (this.selectedInput as AnalogInput).units = this.unit;
                 (this.selectedInput as AnalogInput).alarms = this.alarms;
                 (this.selectedInput as AnalogInput).function = this.func
+            }
+            if ((this.selectedInput as AnalogInput).lowLimit != undefined){
+                this.tagService.updateAnalogInput({
+                    description: this.selectedInput.description,
+                    address: this.selectedInput.address,
+                    scanTime: this.selectedInput.scanTime,
+                    function: (this.selectedInput as AnalogInput).function,
+                    lowLimit: (this.selectedInput as AnalogInput).lowLimit,
+                    highLimit: (this.selectedInput as AnalogInput).highLimit,
+                    units: (this.selectedInput as AnalogInput).units
+                }, this.selectedInput.id).subscribe((res) => {
+                    console.log(res)
+                })
+            }
+            else {
+                this.tagService.updateDigitalInput({
+                    description: this.selectedInput.description,
+                    address: this.selectedInput.address,
+                    scanTime: this.selectedInput.scanTime,
+                }, this.selectedInput.id).subscribe((res) => {
+                    console.log(res)
+                })
             }
             this.closeForm()
             return
@@ -145,36 +186,46 @@ export class AdminInputsComponent {
                 units: this.unit
             }).subscribe((res) => {
                 console.log(res)
-                this.items.analogInputs.push(res)
                 this.alarms.forEach((alarm) => {
                     alarm.tagId = res.id
-                    // TODO create alarm request
+                })
+                res.alarms = this.alarms
+                //this.clearForm()
+                this.items.analogInputs.push(res)
+                res.alarms.forEach((alarm) => {
+                    this.tagService.createAlarm({
+                        type: alarm.type == AlarmType.LOW ? 0 : 1,
+                        priority: alarm.priority,
+                        tagId: alarm.tagId,
+                        threshold: alarm.threshold
+                    }).subscribe((res2) => console.log(res2))
                 })
             })
-            this.closeForm()
             return
         } else {
-            this.items.digitalInputs.push({
-                id: 0,
+            this.tagService.createDigitalInput({
                 description: this.name,
                 address: Number(this.address),
                 scanTime: Number(this.scanTime),
-                isOn: true,
-                currentValue: 0,
-                readTime: '',
-                useRtu: false,
+            }).subscribe((res) => {
+                console.log(res)
+                this.items.digitalInputs.push(res)
             })
             this.closeForm()
             return
         }
-        // TODO Backend call on each case
     }
 
     deleteInput() {
-        if (this.selectedType == InputType.ANALOG) this.items.analogInputs.splice(this.items.analogInputs.indexOf(this.selectedInput as AnalogInput), 1)
-        else this.items.digitalInputs.splice(this.items.digitalInputs.indexOf(this.selectedInput as DigitalInput), 1)
+        if (this.selectedType == InputType.ANALOG){
+            this.tagService.deleteAnalogInput((this.selectedInput as AnalogInput).id).subscribe((res) => console.log(res))
+            this.items.analogInputs.splice(this.items.analogInputs.indexOf(this.selectedInput as AnalogInput), 1)
+        }
+        else {
+            this.tagService.deleteDigitalInput((this.selectedInput as DigitalInput).id).subscribe((res) => console.log(res))
+            this.items.digitalInputs.splice(this.items.digitalInputs.indexOf(this.selectedInput as DigitalInput), 1)
+        }
         this.closeForm()
-        // TODO Backend call
     }
 
     items : TrendingState = {analogInputs: [], digitalInputs: []}

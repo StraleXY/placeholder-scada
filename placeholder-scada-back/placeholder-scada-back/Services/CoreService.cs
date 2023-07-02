@@ -86,22 +86,20 @@ public class CoreService : ICoreService
                 }
                 Context.AnalogValues.Add(analogValue);
                 Context.SaveChanges();
-                if (analogInput.Alarms != null)
+                List<Alarm> alarms = Context.Alarms.Where(x => x.TagId == analogInput.Id).ToList();
+                foreach (Alarm alarm in alarms)
                 {
-                    foreach (Alarm alarm in analogInput.Alarms)
+                    if (alarm.Type == AlarmType.HIGH)
                     {
-                        if (alarm.Type == AlarmType.HIGH)
+                        if (alarm.Threshold < analogValue.Value)
                         {
-                            if (alarm.Threshold < analogValue.Value)
-                            {
-                                TriggerAlarm(alarm, analogValue.Value);
-                            }
-                        } else
+                            TriggerAlarm(alarm, analogValue.Value);
+                        }
+                    } else
+                    {
+                        if (alarm.Threshold > analogValue.Value)
                         {
-                            if (alarm.Threshold > analogValue.Value)
-                            {
-                                TriggerAlarm(alarm, analogValue.Value);
-                            }
+                            TriggerAlarm(alarm, analogValue.Value);
                         }
                     }
                 }
@@ -191,7 +189,8 @@ public class CoreService : ICoreService
                 value = analogValue.Value;
                 time = analogValue.DateTime.ToString("dd/MM/yyyy HH:ss:ff");
             }
-            dto.AnalogInputs.Add(new AnalogInputDto(analogInput, value, time));
+            List<Alarm> alarms = Context.Alarms.Where(x => x.TagId == analogInput.Id).ToList();
+            dto.AnalogInputs.Add(new AnalogInputDto(analogInput, alarms, value, time));
         }
         List<DigitalInput> digitalInputs = await Context.DigitalInputs.ToListAsync();
         foreach (DigitalInput digitalInput in digitalInputs)

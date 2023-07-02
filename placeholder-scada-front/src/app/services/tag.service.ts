@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
-import { AnalogInput, CreateAnalogInput, CreateDigitalInput, DigitalInput } from '../dto/InputDTOs';
+import { Alarm, AnalogInput, CreateAlarm, CreateAnalogInput, CreateDigitalInput, DigitalInput } from '../dto/InputDTOs';
 import { environment } from '../environment';
 import { Observable } from 'rxjs';
 
@@ -27,6 +27,10 @@ export class TagService {
     return this.http.delete<AnalogInput>(`${environment.apiHost}/tag/analog/input/${id}`)
   }
 
+  getAnalogInputs() : Observable<AnalogInput[]> {
+    return this.http.get<AnalogInput[]>(`${environment.apiHost}/tag/analog/input`)
+  }
+
   
   createDigitalInput(dto: CreateDigitalInput) : Observable<DigitalInput> {
     return this.http.post<DigitalInput>(`${environment.apiHost}/tag/digital/input`, dto)
@@ -42,5 +46,17 @@ export class TagService {
 
   deleteDigitalInput(id: number) : Observable<DigitalInput> {
     return this.http.delete<DigitalInput>(`${environment.apiHost}/tag/digital/input/${id}`)
+  }
+  
+  getDigitalInputs() : Observable<DigitalInput[]> {
+    return this.http.get<DigitalInput[]>(`${environment.apiHost}/tag/digital/input`)
+  }
+
+  createAlarm(dto: CreateAlarm) : Observable<Alarm> {
+    return this.http.post<Alarm>(`${environment.apiHost}/tag/alarm`, dto)
+  }
+
+  deleteAlarm(id: number) : Observable<Alarm> {
+    return this.http.delete<Alarm>(`${environment.apiHost}/tag/alarm/${id}`)
   }
 }

@@ -29,7 +29,7 @@
                 <app-select [options]="addresses" [selected]="address" (onSelected)="addressSelected($event)"/>
                 <input placeholder="Scan Time [ms]" type="number" [(ngModel)]="scanTime"/>
             </div>
-            <app-select [options]="functions" [label]="'Simulator Function'" [selected]="func" (onSelected)="func = $event"/>
+            <app-select *ngIf="selectedType == 0" [options]="functions" [label]="'Simulator Function'" [selected]="func" (onSelected)="func = $event"/>
 
             <!-- Units form -->
             <h3 *ngIf="selectedType == 0">Units info</h3>

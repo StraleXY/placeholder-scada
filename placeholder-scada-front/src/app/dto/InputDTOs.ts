@@ -8,6 +8,12 @@ export interface Alarm {
 export enum AlarmType {
     LOW, HIGH
 }
+export interface CreateAlarm {
+    type: number,
+    priority: number,
+    tagId: number,
+    threshold: number
+}
 
 export interface AnalogInput {
     id: number,

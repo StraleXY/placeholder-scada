@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using placeholder_scada_back.Context;
 using placeholder_scada_back.DTO;
 using placeholder_scada_back.Entities;
 using placeholder_scada_back.Services;
@@ -11,10 +12,12 @@ public class TagController : ControllerBase
 {
 
     public ITagService TagService { get; set; }
+    public ScadaContext Context { get; set; }
 
-    public TagController(ITagService tagService)
+    public TagController(ITagService tagService, ScadaContext context)
     {
         TagService = tagService;
+        Context = context;
     }
 
     [HttpPost]
@@ -23,7 +26,7 @@ public class TagController : ControllerBase
     {
         try
         {
-            return Ok(new AnalogInputDto(await TagService.CreateAnalogInput(dto), 0, ""));
+            return Ok(new AnalogInputDto(await TagService.CreateAnalogInput(dto), new List<Alarm>(), 0, ""));
         }
         catch (Exception ex)
         {
@@ -37,7 +40,8 @@ public class TagController : ControllerBase
     {
         try
         {
-            return Ok(new AnalogInputDto(await TagService.OnOffScanAnalogInput(id, scan), 0, ""));
+            List<Alarm> alarms = Context.Alarms.Where(x => x.TagId == id).ToList();
+            return Ok(new AnalogInputDto(await TagService.OnOffScanAnalogInput(id, scan), alarms, 0, ""));
         }
         catch (Exception ex)
         {
@@ -51,7 +55,8 @@ public class TagController : ControllerBase
     {
         try
         {
-            return Ok(new AnalogInputDto(await TagService.UpdateAnalogInput(dto, id), 0, ""));
+            List<Alarm> alarms = Context.Alarms.Where(x => x.TagId == id).ToList();
+            return Ok(new AnalogInputDto(await TagService.UpdateAnalogInput(dto, id), alarms, 0, ""));
         }
         catch(Exception ex)
         {
@@ -65,7 +70,8 @@ public class TagController : ControllerBase
     {
         try
         {
-            return Ok(new AnalogInputDto(await TagService.DeleteAnalogInput(id), 0, ""));
+            List<Alarm> alarms = Context.Alarms.Where(x => x.TagId == id).ToList();
+            return Ok(new AnalogInputDto(await TagService.DeleteAnalogInput(id), alarms, 0, ""));
         }
         catch (Exception exception) 
         { 

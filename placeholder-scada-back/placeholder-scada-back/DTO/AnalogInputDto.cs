@@ -21,7 +21,7 @@ namespace placeholder_scada_back.DTO
         public float CurrentValue { get; set; }
         public string ReadTime { get; set; }
 
-        public AnalogInputDto(AnalogInput analogInput, float currentValue, string readTime) 
+        public AnalogInputDto(AnalogInput analogInput, List<Alarm> alarms, float currentValue, string readTime) 
         {
             Id = analogInput.Id;
             Description = analogInput.Description;
@@ -33,12 +33,9 @@ namespace placeholder_scada_back.DTO
             Function = analogInput.Function == SimulationFunction.SINE ? "sin" 
                 : analogInput.Function == SimulationFunction.COSINE ? "cos" : "ramp";
             Alarms = new List<AlarmDto>();
-            if (analogInput.Alarms != null)
+            foreach(Alarm alarm in alarms)
             {
-                foreach(Alarm alarm in analogInput.Alarms)
-                {
-                    Alarms.Add(new AlarmDto(alarm));
-                }
+                Alarms.Add(new AlarmDto(alarm));
             }
             IsOn = analogInput.IsOn;
             UseRtu = analogInput.UseRtu;

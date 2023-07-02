@@ -42,7 +42,6 @@ public class TagService : ITagService
     public async Task<AnalogInput> CreateAnalogInput(CreateAnalogInputDto dto)
     {
         AnalogInput analogInput = new AnalogInput();
-        analogInput.Alarms = new List<Alarm>();
         analogInput.IsOn = true;
         analogInput.Address = dto.Address;
         analogInput.Units = dto.Units;
@@ -200,9 +199,6 @@ public class TagService : ITagService
         alarm.TagId = dto.TagId;
         alarm.Type = dto.Type == 0 ? AlarmType.LOW : AlarmType.HIGH;
         EntityEntry<Alarm> result = await Context.Alarms.AddAsync(alarm);
-        AnalogInput analogInput = await Context.AnalogInputs.FirstAsync(x => x.Id == alarm.TagId);
-        analogInput.Alarms?.Add(result.Entity);
-        Context.AnalogInputs.Update(analogInput);
         Context.SaveChanges();
         return result.Entity;
     }
@@ -210,9 +206,6 @@ public class TagService : ITagService
     public async Task<Alarm> DeleteAlarm(int id)
     {
         Alarm alarm = await Context.Alarms.FirstAsync(x => x.Id == id);
-        AnalogInput analogInput = await Context.AnalogInputs.FirstAsync(x => x.Id == alarm.TagId);
-        analogInput.Alarms?.Remove(alarm);
-        Context.AnalogInputs.Update(analogInput);
         Context.Alarms.Remove(alarm);
         Context.SaveChanges();
         return alarm;
@@ -224,7 +217,8 @@ public class TagService : ITagService
         List<AnalogInputDto> result = new List<AnalogInputDto>();
         foreach (AnalogInput analogInput in analogInputs)
         {
-            result.Add(new AnalogInputDto(analogInput, 0, ""));
+            List<Alarm> alarms = Context.Alarms.Where(x => x.TagId == analogInput.Id).ToList();
+            result.Add(new AnalogInputDto(analogInput, alarms, 0, ""));
         }
         return result;
     }
