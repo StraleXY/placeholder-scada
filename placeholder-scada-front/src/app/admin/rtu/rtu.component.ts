@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
-import { AnalogOutput, DigitalOutput } from 'src/app/dto/OutputDTOs';
+import { AnalogOutput, DigitalOutput, RealTimeUnit } from 'src/app/dto/OutputDTOs';
+import { RtuService } from 'src/app/services/rtu.service';
 import { TagService } from 'src/app/services/tag.service';
 
 @Component({
@@ -9,7 +10,7 @@ import { TagService } from 'src/app/services/tag.service';
 })
 export class RtuComponent {
 
-    constructor(private tagService: TagService) {
+    constructor(private tagService: TagService, private rtuService: RtuService) {
         this.tagService.getAnalogOutputs().subscribe((res) => {
             console.log(res)
             this.analogItems = res
@@ -20,6 +21,8 @@ export class RtuComponent {
             this.digitalItems = res
             this.generateOutputsList()
         })
+        this.rtuService.getAll().subscribe((res) => this.rtus = res)
+
         this.tagService.analogOutputCreated.subscribe(o => {
             this.analogItems.push(o)
             this.generateOutputsList()
@@ -41,7 +44,13 @@ export class RtuComponent {
     }
     
     saveRTU() {
-
+        this.rtuService.createRTU({
+            isAnalog: this.isAnalog,
+            tagId: Number(this.selectedOutputId),
+            writeTime: Number(this.writeTime)
+        }).subscribe(res => {
+            
+        })
     }
 
     isPreview: boolean = false
@@ -61,6 +70,13 @@ export class RtuComponent {
         this.isAnalog = (output as AnalogOutput)["lowLimit"] != undefined;
     }
 
+    getOutput(rtu: RealTimeUnit) : AnalogOutput | DigitalOutput {
+        if(rtu.isAnalog) return this.analogItems.find(o => o.id == rtu.tagId)!
+        else return this.digitalItems.find(o => o.id == rtu.tagId)!
+    }
+
     analogItems: AnalogOutput[] = []
     digitalItems: DigitalOutput[] = []
+
+    rtus: RealTimeUnit[] = []
 }
