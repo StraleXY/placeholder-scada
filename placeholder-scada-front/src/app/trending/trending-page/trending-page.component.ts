@@ -10,6 +10,6 @@ export class TrendingPageComponent {
 
     // TODO - Populate the list with values
 
-    items: TrendingState = {AnalogInputs: [], DigitalInputs: []}
+    items: TrendingState = {analogInputs: [], digitalInputs: []}
     
 }

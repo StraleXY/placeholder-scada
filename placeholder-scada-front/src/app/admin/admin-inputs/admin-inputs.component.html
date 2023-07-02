@@ -17,8 +17,8 @@
     </div>
     <div class="card">
         <div class="items-container" [ngClass]="{'hidden': !isPreview, 'visible': isPreview}">
-            <div *ngIf="selectedType == 0"> <app-analog-input-info *ngFor="let item of items.AnalogInputs" [AnalogInputItem]="item" (click)="toggleEdit(item)"/> </div>
-            <div class="digital-inputs-container" *ngIf="selectedType == 1"> <app-digital-input-info *ngFor="let item of items.DigitalInputs" [DigitalInputItem]="item" (click)="toggleEdit(item)"/> </div>
+            <div *ngIf="selectedType == 0"> <app-analog-input-info *ngFor="let item of items.analogInputs" [AnalogInputItem]="item" (click)="toggleEdit(item)"/> </div>
+            <div class="digital-inputs-container" *ngIf="selectedType == 1"> <app-digital-input-info *ngFor="let item of items.digitalInputs" [DigitalInputItem]="item" (click)="toggleEdit(item)"/> </div>
         </div>
         <div class="add-edit-container" [ngClass]="{'hidden': isPreview, 'visible': !isPreview}">
 

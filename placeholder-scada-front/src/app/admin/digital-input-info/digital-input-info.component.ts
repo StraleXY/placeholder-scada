@@ -13,13 +13,13 @@ export class DigitalInputInfoComponent {
     }
 
     input: DigitalInput = {
-        Id: 0,
-        Description: "",
-        Address: 0,
-        ScanTime: 0,
-        IsOn: true,
-        CurrentValue: 0,
-        ReadTime: "",
-        UseRtu: false,
+        id: 0,
+        description: "",
+        address: 0,
+        scanTime: 0,
+        isOn: true,
+        currentValue: 0,
+        readTime: "",
+        useRtu: false,
     }
 }
