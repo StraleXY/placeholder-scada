@@ -1,11 +1,6 @@
-.input-grid {
-    display: grid;
-    grid-template-columns: 340px auto;
-    margin-bottom: 10px;
-}
 .input-meta-data-container {
     display: grid;
-    grid-template-columns: 170px auto;
+    grid-template-columns: auto auto;
     text-align: center;
     height: 61px;
     padding: 4px 19px 2px 19px;
@@ -14,6 +9,12 @@
     position: relative;
     box-shadow: 1px 3px 5px 0 rgba(0, 0, 0, 0.1);
     border: 2px #cacaca solid;
+    margin-bottom: 8px;
+    cursor: pointer;
+    transition: all 0.05s;
+}
+.input-meta-data-container:hover {
+    scale: 1.01;
 }
 #address-text {
     position: absolute;
@@ -25,31 +26,16 @@
     font-weight: 500;
     font-size: 1.2em;
     color: #aaa;
-    background-color: #eee;
-    
+    background-color: #eee; 
     transform-origin: 24px 25px;
     transform: rotate(270deg);
 }
 .info-container {
-    margin-left: 22px;
+    margin-left: 26px;
 }
 .title-text {
+    margin-top: 11px;
     text-align: start;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    white-space: nowrap;
-}
-.value-container {
-    display: flex;
-    justify-content: end;
-    align-items: first baseline;
-    margin-left: 16px;
-}
-#unit-text {
-    font-size: 1.25em;
-    margin-left: 4px;
-    font-family: 'Economica';
-    letter-spacing: -0.075rem;
 }
 #read-time-text {
     font-size: 1em;
@@ -57,11 +43,4 @@
     font-weight: 500;
     color: #666;
     text-align: start;
-}
-
-.input-alarms-container {
-    margin-left: 10px;
-    display: flex;
-    gap: 8px;
-    position: relative;
 }

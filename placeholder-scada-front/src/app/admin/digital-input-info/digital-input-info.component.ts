@@ -2,11 +2,11 @@ import { Component, Input } from '@angular/core';
 import { DigitalInput } from 'src/app/dto/InputDTOs';
 
 @Component({
-  selector: 'app-digital-input',
-  templateUrl: './digital-input.component.html',
-  styleUrls: ['./digital-input.component.css']
+  selector: 'app-digital-input-info',
+  templateUrl: './digital-input-info.component.html',
+  styleUrls: ['./digital-input-info.component.css']
 })
-export class DigitalInputComponent {
+export class DigitalInputInfoComponent {
     
     @Input() set DigitalInputItem(item: DigitalInput) {
         this.input = item

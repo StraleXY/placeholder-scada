@@ -1,0 +1,14 @@
+<div class="header-card-wrapper">
+    <div id="header">
+        <h2>RTUs</h2>
+    </div>
+    <div class="card">
+        <!-- Add Edit -->
+        <div class="add-edit-container" [ngClass]="{'hidden': isPreview, 'visible': !isPreview}">
+            <app-select [options]="outputs" label="Output Tag" [selected]="" (onSelected)="setOutput($event)"/>
+            <input placeholder="Write Time [ms]" type="number" [(ngModel)]="writeTime"/>
+            <br> <br> <hr>
+            <button class="solid-button" style="width: 130px; margin-top: 8px;" (click)="saveRTU()">Save RTU</button>
+        </div>
+    </div>
+</div>

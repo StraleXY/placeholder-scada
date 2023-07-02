@@ -1,0 +1,91 @@
+<div class="header-card-wrapper">
+    <div id="header">
+        <div class="header-left">
+            <h2>Inputs</h2>
+            <div *ngIf="selectedInput == undefined" class="radio-inputs">
+                <label class="radio">
+                    <input type="radio" name="radio-input" [checked]="selectedType == 0" (click)="selectedType = 0">
+                    <span class="name">ANALOG</span>
+                </label>
+                <label class="radio">
+                    <input type="radio" name="radio-input" [checked]="selectedType == 1" (click)="selectedType = 1">
+                    <span class="name">DIGITAL</span>
+                </label>
+            </div>
+        </div>
+        <button class="solid-button" (click)="toggleAdd()">{{isPreview ? "New" : "Cancel"}}</button>
+    </div>
+    <div class="card">
+        <div class="items-container" [ngClass]="{'hidden': !isPreview, 'visible': isPreview}">
+            <div *ngIf="selectedType == 0"> <app-analog-input-info *ngFor="let item of items.AnalogInputs" [AnalogInputItem]="item" (click)="toggleEdit(item)"/> </div>
+            <div class="digital-inputs-container" *ngIf="selectedType == 1"> <app-digital-input-info *ngFor="let item of items.DigitalInputs" [DigitalInputItem]="item" (click)="toggleEdit(item)"/> </div>
+        </div>
+        <div class="add-edit-container" [ngClass]="{'hidden': isPreview, 'visible': !isPreview}">
+
+            <!-- Basic Info -->
+            <h3>Basic info</h3>
+            <input placeholder="Name / Description" [(ngModel)]="name"/>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 6px;">
+                <app-select [options]="addresses" [selected]="address" (onSelected)="addressSelected($event)"/>
+                <input placeholder="Scan Time [ms]" type="number" [(ngModel)]="scanTime"/>
+            </div>
+            <app-select [options]="functions" [label]="'Simulator Function'" [selected]="func" (onSelected)="func = $event"/>
+
+            <!-- Units form -->
+            <h3 *ngIf="selectedType == 0">Units info</h3>
+            <div class="analog-meta-data" *ngIf="selectedType == 0">
+                <input placeholder="From" type="number" [(ngModel)]="unitsFrom"/>
+                <input placeholder="To" type="number" [(ngModel)]="unitsTo"/>
+                <input placeholder="Units" [(ngModel)]="unit"/>
+            </div>
+
+            <!-- Alarms -->
+            <h3 *ngIf="selectedType == 0 && alarms.length != 0">Alarms [Click to delete]</h3>
+            <div class="input-alarms-container">
+                <app-alarm style="height: 56px;" *ngFor="let alarm of alarms" [alarm]="alarm" (onClick)="deleteAlarm(alarm)"/>
+            </div>
+            <div *ngIf="selectedType == 0 && alarms.length < 5">
+                <h3>New Alarm</h3>
+                <div style="display: grid; gap: 10px; align-items: center; grid-template-columns: 0.8fr 1.2fr; margin-bottom: 10px;">
+                    <!-- Type selector -->
+                    <div class="radio-inputs" style="width: 100%;">
+                        <label class="radio">
+                            <input type="radio" name="type-radio" [checked]="selectedAlarmType == 0" (click)="selectedAlarmType = 0">
+                            <span class="name">BELOVE</span>
+                        </label>
+                        <label class="radio">
+                            <input type="radio" name="type-radio" [checked]="selectedAlarmType == 1" (click)="selectedAlarmType = 1">
+                            <span class="name">ABOVE</span>
+                        </label>
+                    </div>
+                    <!-- Priority selector -->
+                    <div class="radio-inputs" style="width: 100%;">
+                        <label class="radio">
+                            <input type="radio" name="priority-radio" [checked]="selectedAlarmPriority == 1" (click)="selectedAlarmPriority = 1">
+                            <span class="name">LOW</span>
+                        </label>
+                        <label class="radio">
+                            <input type="radio" name="priority-radio" [checked]="selectedAlarmPriority == 2" (click)="selectedAlarmPriority = 2">
+                            <span class="name">HIGH</span>
+                        </label>
+                        <label class="radio">
+                            <input type="radio" name="priority-radio" [checked]="selectedAlarmPriority == 3" (click)="selectedAlarmPriority = 3">
+                            <span class="name">CRITICAL</span>
+                        </label>
+                    </div>
+                </div>
+                <div style="display: grid; grid-template-columns: auto 100px; gap: 6px;">
+                    <input placeholder="Threshold" type="number" [(ngModel)]="threshold"/>
+                    <button class="outlined-button" (click)="addAlarm()">Create</button>
+                </div>
+            </div>
+
+            <!-- Crud Buttons -->
+            <br> <br> <hr>
+            <div style="width: 100%; display: flex; justify-content: end; gap: 6px;">
+                <button *ngIf="selectedInput != undefined" class="solid-button" style="width: 140px; margin-top: 8px;" (click)="deleteInput()">Delete input</button>
+                <button class="solid-button" style="width: 130px; margin-top: 8px;" (click)="saveInput()">Save input</button>
+            </div>
+        </div>
+    </div>
+</div>

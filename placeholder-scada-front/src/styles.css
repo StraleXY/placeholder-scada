@@ -10,6 +10,12 @@
     height: 100vh;
     background-color: #e8e8e8;
 }
+.card {
+    background-color: #f8f8f8;
+    border-radius: 19px;
+    box-shadow: 1px 3px 8px 0 rgba(0, 0, 0, 0.1);
+    height: calc(100vh - 84px);
+}
 
 h1 {
     font-size: 3em;
@@ -19,6 +25,9 @@ h1 {
     color: #c0c0c0;
     user-select: none;
     animation: mymove 3s infinite;
+}
+h2 {
+    font-size: 1.75em;
 }
 @keyframes breathing-title {
     from { color: #c0c0c0; }
@@ -85,6 +94,20 @@ button:active {
     outline: #212121 2px solid;
 }
 
+.outlined-button {
+    height: 46px;
+    border-radius: 8px;
+    translate: 0 1px;
+    outline: #c0c0c0 2.25px solid;
+    background-color: transparent;
+}
+.outlined-button:hover {
+    background-color: #cecece;
+}
+.outlined-button:focus-visible {
+    outline: #212121 2px solid;
+}
+
 .text-button {
     background-color: transparent;
     letter-spacing: 0.09em;
@@ -96,4 +119,88 @@ button:active {
     font-weight: normal;
     font-family: 'Economica';
     letter-spacing: -0.1rem;
+}
+
+.header-card-wrapper {
+    display: grid;
+    height: calc(100vh - 32px);
+    grid-template-rows: auto 1fr;
+}
+#header {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+    padding: 0 8px;
+}
+
+
+.b {
+    border: 1px rgba(188, 143, 143, 0.808) solid;
+}
+
+/* width */
+::-webkit-scrollbar {
+    width: 6px;
+}
+  
+/* Track */
+::-webkit-scrollbar-track {
+    background: transparent;
+    margin: 16px 0;
+}
+  
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #bbb;
+    border-radius: 3px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #999;
+}
+
+
+/* Selector */
+.radio-inputs {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    border-radius: 19px;
+    background-color: #cecece;
+    box-sizing: border-box;
+    box-shadow: 0 0 0px 1px rgba(0, 0, 0, 0.06);
+    padding: 3px;
+    width: 175px;
+    height: 38px;
+    font-size: 0.9rem;
+    letter-spacing: 0.1em;
+}
+
+.radio-inputs .radio {
+    flex: 1 1 auto;
+    text-align: center;
+}
+
+.radio-inputs .radio input {
+    display: none;
+}
+
+.radio-inputs .radio .name {
+    display: flex;
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    border-radius: 19px;
+    height: 32px;
+    border: none;
+    padding: .5rem 0;
+    color: rgba(51, 65, 85, 1);
+    transition: all .15s ease-in-out;
+}
+
+.radio-inputs .radio input:checked + .name {
+    background-color: #fff;
+    height: 32px;
+    font-weight: 800;
 }

@@ -2,12 +2,12 @@ import { Component, Input } from '@angular/core';
 import { AnalogInput } from 'src/app/dto/InputDTOs';
 
 @Component({
-  selector: 'app-analog-input',
-  templateUrl: './analog-input.component.html',
-  styleUrls: ['./analog-input.component.css']
+  selector: 'app-analog-input-info',
+  templateUrl: './analog-input-info.component.html',
+  styleUrls: ['./analog-input-info.component.css']
 })
-export class AnalogInputComponent {
-
+export class AnalogInputInfoComponent {
+    
     @Input() set AnalogInputItem(item: AnalogInput) {
         this.input = item
     }
@@ -21,9 +21,9 @@ export class AnalogInputComponent {
         HighLimit: 0,
         Units: "C",
         Alarms: [],
-        Function: "sin",
         IsOn: true,
         CurrentValue: 0,
+        Function: "sin",
         ReadTime: ""
     }
 }

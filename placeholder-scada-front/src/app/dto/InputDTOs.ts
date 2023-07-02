@@ -17,7 +17,7 @@ export interface AnalogInput {
     IsOn: boolean,
     CurrentValue: number,
     ReadTime: string
-    
+    Function: string
     LowLimit: number,
     HighLimit: number,
     Units: string | null,
@@ -37,4 +37,8 @@ export interface DigitalInput {
 export interface TrendingState {
     AnalogInputs: AnalogInput[],
     DigitalInputs: DigitalInput[]
+}
+
+export enum InputType {
+    ANALOG, DIGITAL
 }
