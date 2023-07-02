@@ -34,8 +34,9 @@ public class UserService : IUserService
         {
             return false;
         }
-        User newUser = new User(createUserDto.Username, createUserDto.Password);
+        User newUser = new User(createUserDto.Username, createUserDto.Password, Role.USER);
         Context.Users.Add(newUser);
+        Context.SaveChanges();
         return true;
     }
 }

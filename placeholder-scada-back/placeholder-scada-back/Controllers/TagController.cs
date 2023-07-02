@@ -47,7 +47,7 @@ public class TagController : ControllerBase
 
     [HttpPut]
     [Route("analog/input/{id}")]
-    public async Task<ActionResult<AnalogInputDto>> CreateAnalogInput([FromBody] CreateAnalogInputDto dto, [FromRoute] int id)
+    public async Task<ActionResult<AnalogInputDto>> UpdateAnalogInput([FromBody] CreateAnalogInputDto dto, [FromRoute] int id)
     {
         try
         {

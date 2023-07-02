@@ -15,6 +15,5 @@ namespace placeholder_scada_back.DTO
         // Function used when simulating without RTU
         // sin, cos or ramp
         public string Function { get; set; }
-        public bool UseRtu { get; set; }
     }
 }

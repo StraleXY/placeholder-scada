@@ -9,6 +9,5 @@ namespace placeholder_scada_back.DTO
         // Address tag is writing to (number from 1 to 20)
         public int Address { get; set; }
         public int ScanTime { get; set; }
-        public bool UseRtu { get; set; }
     }
 }

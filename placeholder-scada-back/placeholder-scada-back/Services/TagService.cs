@@ -50,7 +50,7 @@ public class TagService : ITagService
         analogInput.HighLimit = dto.HighLimit;
         analogInput.LowLimit = dto.LowLimit;
         analogInput.ScanTime = dto.ScanTime;
-        analogInput.UseRtu = dto.UseRtu;
+        analogInput.UseRtu = false;
         analogInput.Function = dto.Function.Equals("sin") ? SimulationFunction.SINE
             : dto.Function.Equals("cos") ? SimulationFunction.COSINE : SimulationFunction.RAMP;
         EntityEntry<AnalogInput> result = await Context.AnalogInputs.AddAsync(analogInput);
@@ -74,7 +74,6 @@ public class TagService : ITagService
         analogInput.HighLimit = dto.HighLimit;
         analogInput.LowLimit = dto.LowLimit;
         analogInput.ScanTime = dto.ScanTime;
-        analogInput.UseRtu = dto.UseRtu;
         analogInput.Function = dto.Function.Equals("sin") ? SimulationFunction.SINE
             : dto.Function.Equals("cos") ? SimulationFunction.COSINE : SimulationFunction.RAMP;
         Context.AnalogInputs.Update(analogInput);
@@ -131,7 +130,7 @@ public class TagService : ITagService
         digitalInput.Address = dto.Address;
         digitalInput.Description = dto.Description;
         digitalInput.ScanTime = dto.ScanTime;
-        digitalInput.UseRtu = dto.UseRtu;
+        digitalInput.UseRtu = false;
         digitalInput.IsOn = true;
         EntityEntry<DigitalInput> result = await Context.DigitalInputs.AddAsync(digitalInput);
         Context.SaveChanges();
@@ -151,7 +150,6 @@ public class TagService : ITagService
         digitalInput.Address = dto.Address;
         digitalInput.Description = dto.Description;
         digitalInput.ScanTime = dto.ScanTime;
-        digitalInput.UseRtu = dto.UseRtu;
         Context.DigitalInputs.Update(digitalInput);
         Context.SaveChanges();
         return digitalInput;
