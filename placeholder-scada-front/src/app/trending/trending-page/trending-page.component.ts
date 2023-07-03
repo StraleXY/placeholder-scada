@@ -19,7 +19,16 @@ export class TrendingPageComponent {
                     console.log(res)
                     that.items = res['result']
                 })
-            }, 1000);
+            }, 100);
+        },
+        (err) => {
+            console.log(err)
+            setInterval(function(){ 
+                coreService.getTrendingState().subscribe((res) => {
+                    console.log(res)
+                    that.items = res['result']
+                })
+            }, 100);
         })
     }
 

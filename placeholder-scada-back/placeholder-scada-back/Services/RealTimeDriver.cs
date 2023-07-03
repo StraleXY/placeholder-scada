@@ -12,29 +12,20 @@ public interface IRealTimeDriver : IDriver
     void Stop();
     void RunRtu(AnalogOutput analogOutput);
     void RunRtu(DigitalOutput digitalOutput);
+    void StartRtu(RealTimeUnit rtu);
 }
 
 public class RealTimeDriver : IRealTimeDriver
 {
 
     public required ScadaContext Context { get; set; }
-    public Random Rng { get; set; }
     public required IServiceProvider Services { get; set; }
     
     public RealTimeDriver(ScadaContext scadaContext, IServiceProvider services)
     {
         Context = scadaContext;
-        AnalogTable = new float[21];
-        DigitalTable = new bool[21];
-        Rng = new Random();
-        Threads = new List<Thread>();
         Services = services;
     }
-
-    public float[] AnalogTable { get; set; }
-    public bool[] DigitalTable { get; set; }
-
-    public List<Thread> Threads { get; set; }
 
     public async void RealTimeUnitWorker(object? realTimeUnitObj)
     {
@@ -48,16 +39,46 @@ public class RealTimeDriver : IRealTimeDriver
                 while (true)
                 {
                     Thread.Sleep(rtu.WriteTime);
-                    rtu = Context.RealTimeUnits.First(x => x.Id == rtu.Id);
+                    rtu = Context.RealTimeUnits.FirstOrDefault(x => x.Id == rtu.Id);
+                    if (rtu == null) return;
+
                     if (rtu.IsAnalog)
                     {
-                        AnalogOutput analogOutput = Context.AnalogOutputs.First(x => x.Id == rtu.TagId);
-                        RunRtu(analogOutput);
+                        AnalogOutput? analogOutput = null;
+                        lock (GlobalVariables.AnalogOutputCacheLock)
+                        {
+                            if (GlobalVariables.AnalogOutputCache.ContainsKey(rtu.TagId))
+                            {
+                                analogOutput = GlobalVariables.AnalogOutputCache[rtu.TagId];
+                            }
+                            else
+                            {
+                                analogOutput = Context.AnalogOutputs.FirstOrDefault(x => x.Id == rtu.TagId);
+                            }
+                        }
+                        if (analogOutput != null)
+                        {
+                            RunRtu(analogOutput);
+                        }
                     }
                     else
                     {
-                        DigitalOutput digitalOutput = Context.DigitalOutputs.First(x => x.Id == rtu.TagId);
-                        RunRtu(digitalOutput);
+                        DigitalOutput? digitalOutput = null;
+                        lock (GlobalVariables.DigitalOutputCacheLock)
+                        {
+                            if (GlobalVariables.DigitalOutputCache.ContainsKey(rtu.TagId))
+                            {
+                                digitalOutput = GlobalVariables.DigitalOutputCache[rtu.TagId];
+                            }
+                            else
+                            {
+                                digitalOutput = Context.DigitalOutputs.First(x => x.Id == rtu.TagId);
+                            }
+                        }
+                        if (digitalOutput != null)
+                        {
+                            RunRtu(digitalOutput);
+                        }
                     }
                 }
             }
@@ -66,49 +87,69 @@ public class RealTimeDriver : IRealTimeDriver
 
     public async Task<float> GetAnalogInputValue(AnalogInput analogInput)
     {
-        return Math.Max(analogInput.LowLimit, Math.Min(analogInput.HighLimit, AnalogTable[analogInput.Address]));
+        return Math.Max(analogInput.LowLimit, Math.Min(analogInput.HighLimit, GlobalVariables.AnalogTable[analogInput.Address]));
     }
 
     public async Task<bool> GetDigitalInputValue(DigitalInput digitalInput)
     {
-        return DigitalTable[digitalInput.Address];
+        return GlobalVariables.DigitalTable[digitalInput.Address];
     }
 
+    public void StartRtu(RealTimeUnit rtu)
+    {
+        lock (GlobalVariables.WorkersLock)
+        {
+            if (!GlobalVariables.RTUWorkers.ContainsKey(rtu.Id))
+            {
+                Thread thread = new Thread(RealTimeUnitWorker);
+                thread.Start(rtu);
+                thread.IsBackground = true;
+                GlobalVariables.RTUWorkers[rtu.Id] = thread;
+            }
+        }
+    }
     public void Start()
     {
         List<AnalogOutput> analogOutputs = Context.AnalogOutputs.ToList();
         foreach (AnalogOutput analogOutput in analogOutputs)
         {
-            AnalogTable[analogOutput.Address] = analogOutput.InitialValue;
+            GlobalVariables.AnalogTable[analogOutput.Address] = analogOutput.InitialValue;
         }
         List<DigitalOutput> digitalOutputs = Context.DigitalOutputs.ToList();
         foreach (DigitalOutput digitalOutput in digitalOutputs)
         {
-            DigitalTable[digitalOutput.Address] = digitalOutput.InitialValue;
+            GlobalVariables.DigitalTable[digitalOutput.Address] = digitalOutput.InitialValue;
         }
         List<RealTimeUnit> rtus = Context.RealTimeUnits.ToList();
         foreach (RealTimeUnit rtu in rtus)
         {
-            Thread thread = new Thread(RealTimeUnitWorker);
-            thread.Start(rtu);
-            Threads.Add(thread);
+            StartRtu(rtu);
         }
     }
 
     public void Stop()
     {
-        Threads.Clear();
+        lock (GlobalVariables.WorkersLock)
+        {
+            GlobalVariables.RTUWorkers.Clear();
+        }
     }
 
     public void RunRtu(AnalogOutput analogOutput)
     {
-        AnalogTable[analogOutput.Address] = (float)Rng.NextDouble() 
-            * (analogOutput.HighLimit - analogOutput.LowLimit) 
-            + analogOutput.LowLimit;
+        lock (GlobalVariables.RngLock)
+        {
+            GlobalVariables.AnalogTable[analogOutput.Address] = (float)GlobalVariables.Rng.NextDouble()
+                * (analogOutput.HighLimit - analogOutput.LowLimit)
+                + analogOutput.LowLimit;
+        }
     }
 
     public void RunRtu(DigitalOutput digitalOutput)
     {
-        DigitalTable[digitalOutput.Address] = Rng.Next(2) == 0;
+        lock (GlobalVariables.RngLock)
+        {
+            GlobalVariables.DigitalTable[digitalOutput.Address] = GlobalVariables.Rng.Next(2) == 0;
+        }
     }
 }

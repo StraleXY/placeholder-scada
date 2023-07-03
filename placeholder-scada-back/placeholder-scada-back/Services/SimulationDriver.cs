@@ -55,6 +55,6 @@ public class SimulationDriver : ISimulationDriver
 
     public async Task<bool> GetDigitalInputValue(DigitalInput digitalInput)
     {
-        return (DateTime.Now.Second <= 15 ? true : false) ^ (DateTime.Now.Minute % 2 == 0);
+        return (DateTime.Now.Second % 10 <= 5 ? true : false) ^ (DateTime.Now.Minute % 2 == 0);
     }
 }

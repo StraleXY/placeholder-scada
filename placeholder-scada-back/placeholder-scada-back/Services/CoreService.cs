@@ -15,11 +15,12 @@ public interface ICoreService
     Task<RealTimeUnit> UpdateRealTimeUnit(CreateRealTimeUnitDto dto, int id);
     Task<RealTimeUnit> DeleteRealTimeUnit(int id);
     Task<List<RealTimeUnitDto>> GetAllRealTimeUnits();
+    void StartAnalogInput(AnalogInput analogInput);
+    void StartDigitalInput(DigitalInput digitalInput);
 }
 
 public class CoreService : ICoreService
 {
-    private readonly object _alarmsLogLock = new object();
     public required ScadaContext Context { get; set; }
     public required ISimulationDriver SimulationDriver { get; set; }
     public required IRealTimeDriver RealTimeDriver { get; set; }
@@ -28,17 +29,14 @@ public class CoreService : ICoreService
     public CoreService(ScadaContext scadaContext, ISimulationDriver simulationDriver, IRealTimeDriver realTimeDriver, IServiceProvider services)
     {
         Context = scadaContext;
-        threads = new List<Thread>();
         SimulationDriver = simulationDriver;
         RealTimeDriver = realTimeDriver;
         Services = services;
     }
 
-    public List<Thread> threads { get; set; }
-
     private void LogTriggeredAlarm(TriggeredAlarm triggeredAlarm, Alarm alarm)
     {
-        lock (_alarmsLogLock)
+        lock (GlobalVariables.AlarmsLogLock)
         {
             using (StreamWriter sw = File.AppendText("alarmsLog.txt"))
             {
@@ -76,7 +74,18 @@ public class CoreService : ICoreService
                 while (true)
                 {
                     Thread.Sleep(analogInput.ScanTime);
-                    analogInput = Context.AnalogInputs.First(x => x.Id == analogInput.Id);
+                    lock (GlobalVariables.AnalogInputCacheLock)
+                    {
+                        if (GlobalVariables.AnalogInputCache.ContainsKey(analogInput.Id))
+                        {
+                            analogInput = GlobalVariables.AnalogInputCache[analogInput.Id];
+                        }
+                        else
+                        {
+                            analogInput = Context.AnalogInputs.FirstOrDefault(x => x.Id == analogInput.Id);
+                        }
+                    }
+                    if (analogInput == null) return;
                     if (!analogInput.IsOn) continue;
 
                     AnalogValue analogValue = new AnalogValue();
@@ -127,7 +136,18 @@ public class CoreService : ICoreService
                 while (true)
                 {
                     Thread.Sleep(digitalInput.ScanTime);
-                    digitalInput = Context.DigitalInputs.First(x => x.Id == digitalInput.Id);
+                    lock (GlobalVariables.DigitalInputCacheLock)
+                    {
+                        if (GlobalVariables.DigitalInputCache.ContainsKey(digitalInput.Id))
+                        {
+                            digitalInput = GlobalVariables.DigitalInputCache[digitalInput.Id];
+                        }
+                        else
+                        {
+                            digitalInput = Context.DigitalInputs.FirstOrDefault(x => x.Id == digitalInput.Id);
+                        }
+                    }
+                    if (digitalInput == null) return;
                     if (!digitalInput.IsOn) continue;
 
                     DigitalValue digitalValue = new DigitalValue();
@@ -150,45 +170,73 @@ public class CoreService : ICoreService
 
     public void StartAnalogInput(AnalogInput analogInput)
     {
-        Thread thread = new Thread(this.AnalogInputWorker);
-        thread.Start(analogInput);
-        threads.Add(thread);
+        lock (GlobalVariables.WorkersLock)
+        {
+            if (!GlobalVariables.AnalogWorkers.ContainsKey(analogInput.Id))
+            {
+                Thread thread = new Thread(this.AnalogInputWorker);
+                thread.Start(analogInput);
+                thread.IsBackground = true;
+                GlobalVariables.AnalogWorkers[analogInput.Id] = thread;
+            }
+        }
     }
     public void StartDigitalInput(DigitalInput digitalInput)
     {
-        Thread thread = new Thread(this.DigitalInputWorker);
-        thread.Start(digitalInput);
-        threads.Add(thread);
+        lock (GlobalVariables.WorkersLock)
+        {
+            if (!GlobalVariables.DigitalWorkers.ContainsKey(digitalInput.Id))
+            {
+                Thread thread = new Thread(this.DigitalInputWorker);
+                thread.Start(digitalInput);
+                thread.IsBackground = true;
+                GlobalVariables.DigitalWorkers[digitalInput.Id] = thread;
+            }
+        }
     }
-    private async void StartInputTags()
+    public async void StartInputTags()
     {
         List<AnalogInput> analogInputs = Context.AnalogInputs.ToList();
         foreach (AnalogInput analogInput in analogInputs)
         {
+            lock (GlobalVariables.AnalogInputCacheLock)
+            {
+                GlobalVariables.AnalogInputCache[analogInput.Id] = analogInput;
+            }
             StartAnalogInput(analogInput);
         }
         List<DigitalInput> digitalInputs = await Context.DigitalInputs.ToListAsync();
         foreach (DigitalInput digitalInput in digitalInputs)
         {
+            lock (GlobalVariables.DigitalInputCacheLock)
+            {
+                GlobalVariables.DigitalInputCache[digitalInput.Id] = digitalInput;
+            }
             StartDigitalInput(digitalInput);
         }
     }
 
     public async Task<bool> StartSystem()
     {
-        if (threads.Count > 0)
+        if (GlobalVariables.SystemStarted)
         {
             return false;
         }
         StartInputTags();
         RealTimeDriver.Start();
+        GlobalVariables.SystemStarted = true;
         return true;
     }
 
     public async Task<bool> StopSystem()
     {
-        threads.Clear();
+        lock (GlobalVariables.WorkersLock)
+        {
+            GlobalVariables.AnalogWorkers.Clear();
+            GlobalVariables.DigitalWorkers.Clear();
+        }
         RealTimeDriver.Stop();
+        GlobalVariables.SystemStarted = false;
         return true;
     }
 
@@ -227,18 +275,64 @@ public class CoreService : ICoreService
 
     public async Task<RealTimeUnit> CreateRealTimeUnit(CreateRealTimeUnitDto dto)
     {
+        if (dto.IsAnalog)
+        {
+            AnalogOutput? output = Context.AnalogOutputs.FirstOrDefault(x => x.Id == dto.TagId);
+            if (output != null)
+            {
+                AnalogInput? input = Context.AnalogInputs.FirstOrDefault(x => x.Address == output.Address);
+                if (input != null)
+                {
+                    input.UseRtu = true;
+                    Context.AnalogInputs.Update(input);
+                    Context.SaveChanges();
+                    lock (GlobalVariables.AnalogInputCacheLock)
+                    {
+                        GlobalVariables.AnalogInputCache[input.Id] = input;
+                    }
+                }
+            }
+            else
+            {
+                throw new Exception("Output tag doesn't exist!");
+            }
+        }
+        else
+        {
+            DigitalOutput? output = Context.DigitalOutputs.FirstOrDefault(x => x.Id == dto.TagId);
+            if (output != null)
+            {
+                DigitalInput? input = Context.DigitalInputs.FirstOrDefault(x => x.Address == output.Address);
+                if (input != null)
+                {
+                    input.UseRtu = true;
+                    Context.DigitalInputs.Update(input);
+                    Context.SaveChanges();
+                    lock (GlobalVariables.DigitalInputCacheLock)
+                    {
+                        GlobalVariables.DigitalInputCache[input.Id] = input;
+                    }
+                }
+            }
+            else
+            {
+                throw new Exception("Output tag doesn't exits!");
+            }
+        }
         RealTimeUnit rtu = new RealTimeUnit();
         rtu.TagId = dto.TagId;
         rtu.WriteTime = dto.WriteTime;
         rtu.IsAnalog = dto.IsAnalog;
         EntityEntry<RealTimeUnit> result = await Context.RealTimeUnits.AddAsync(rtu);
         Context.SaveChanges();
+        RealTimeDriver.StartRtu(result.Entity);
+        Thread.Sleep(100);
         return result.Entity;
     }
 
     public async Task<RealTimeUnit> UpdateRealTimeUnit(CreateRealTimeUnitDto dto, int id)
     {
-        RealTimeUnit rtu = await Context.RealTimeUnits.FirstAsync(x => x.Id == id);
+        RealTimeUnit rtu = Context.RealTimeUnits.First(x => x.Id == id);
         rtu.TagId = dto.TagId;
         rtu.WriteTime = dto.WriteTime;
         rtu.IsAnalog = dto.IsAnalog;
@@ -252,6 +346,42 @@ public class CoreService : ICoreService
         RealTimeUnit rtu = await Context.RealTimeUnits.FirstAsync(x => x.Id == id);
         Context.RealTimeUnits.Remove(rtu);
         Context.SaveChanges();
+        if (rtu.IsAnalog)
+        {
+            AnalogOutput? output = Context.AnalogOutputs.FirstOrDefault(x => x.Id == rtu.TagId);
+            if (output != null)
+            {
+                AnalogInput? input = Context.AnalogInputs.FirstOrDefault(x => x.Address == output.Address);
+                if (input != null)
+                {
+                    input.UseRtu = false;
+                    Context.AnalogInputs.Update(input);
+                    Context.SaveChanges();
+                    lock (GlobalVariables.AnalogInputCacheLock)
+                    {
+                        GlobalVariables.AnalogInputCache[input.Id] = input;
+                    }
+                }
+            }
+        }
+        else
+        {
+            DigitalOutput? output = Context.DigitalOutputs.FirstOrDefault(x => x.Id == rtu.TagId);
+            if (output != null)
+            {
+                DigitalInput? input = Context.DigitalInputs.FirstOrDefault(x => x.Address == output.Address);
+                if (input != null)
+                {
+                    input.UseRtu = false;
+                    Context.DigitalInputs.Update(input);
+                    Context.SaveChanges();
+                    lock (GlobalVariables.DigitalInputCacheLock)
+                    {
+                        GlobalVariables.DigitalInputCache[input.Id] = input;
+                    }
+                }
+            }
+        }
         return rtu;
     }
 
