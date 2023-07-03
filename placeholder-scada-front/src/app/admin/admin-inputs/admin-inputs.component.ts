@@ -1,5 +1,6 @@
 import { Component } from '@angular/core';
 import { Alarm, AlarmType, AnalogInput, DigitalInput, InputType, TrendingState } from 'src/app/dto/InputDTOs';
+import { TagService } from 'src/app/services/tag.service';
 
 @Component({
   selector: 'app-admin-inputs',
@@ -8,9 +9,17 @@ import { Alarm, AlarmType, AnalogInput, DigitalInput, InputType, TrendingState }
 })
 export class AdminInputsComponent {
 
-    constructor() {
-        this.generateAddresses()
-        // TODO Backend call to get all inputs [Same state dto as in worker front]
+    constructor(private tagService: TagService) {
+        this.tagService.getAnalogInputs().subscribe((res) => {
+            console.log(res)
+            this.items.analogInputs = res
+            this.generateAddresses()
+        })
+        this.tagService.getDigitalInputs().subscribe((res) => {
+            console.log(res)
+            this.items.digitalInputs = res
+            this.generateAddresses()
+        })
     }
 
     isPreview: boolean = true
@@ -37,11 +46,11 @@ export class AdminInputsComponent {
     generateAddresses() {
         this.addresses = []
         let takenAddresses: number[] = []
-        this.items.AnalogInputs.forEach((input) => {
-            takenAddresses.push(input.Address)
+        this.items.analogInputs.forEach((input) => {
+            takenAddresses.push(input.address)
         })
-        this.items.DigitalInputs.forEach((input) => {
-            takenAddresses.push(input.Address)
+        this.items.digitalInputs.forEach((input) => {
+            takenAddresses.push(input.address)
         })
         for(let i = 1; i <= 20; i++) {
             if(takenAddresses.indexOf(i) == -1) 
@@ -54,15 +63,16 @@ export class AdminInputsComponent {
         this.clearForm()
     }
     toggleEdit(input: any) {
+        console.log(input);
         this.selectedInput = input
-        this.name = input["Description"]
-        this.scanTime = input["ScanTime"]
-        this.address = input["Address"]
-        this.unitsFrom = input["LowLimit"] != undefined ? input["LowLimit"] : ""
-        this.unitsTo = input["HighLimit"] != undefined ? input["HighLimit"] : ""
-        this.unit = input["Units"] != undefined ? input["Units"] : ""
-        this.alarms = input["Alarms"] != undefined ? input["Alarms"] : []
-        this.func = input["Function"] != undefined ? input["Function"] : ""
+        this.name = input["description"]
+        this.scanTime = input["scanTime"]
+        this.address = input["address"]
+        this.unitsFrom = input["lowLimit"] != undefined ? input["lowLimit"] : ""
+        this.unitsTo = input["highLimit"] != undefined ? input["highLimit"] : ""
+        this.unit = input["units"] != undefined ? input["units"] : ""
+        this.alarms = input["alarms"] != undefined ? input["alarms"] : []
+        this.func = input["function"] != undefined ? input["function"] : ""
         this.addresses.push({label: "Address " + this.address, value: this.address})
         this.addresses.sort((a, b) => {
             if(Number(a.value) == Number(b.value)) return 0
@@ -104,552 +114,120 @@ export class AdminInputsComponent {
     }
     addAlarm() {
         this.alarms.push({
-            Id: 0,
-            Type: this.selectedAlarmType,
-            Priority: this.selectedAlarmPriority,
-            TagId: this.selectedInput != undefined ? this.selectedInput["Id"] : 0,
-            Threshold: Number(this.threshold)
+            id: 0,
+            type: this.selectedAlarmType,
+            priority: this.selectedAlarmPriority,
+            tagId: this.selectedInput != undefined ? this.selectedInput["id"] : 0,
+            threshold: Number(this.threshold)
         })
-        // TODO Backend call
+        let alarm: Alarm = this.alarms[this.alarms.length-1]
+        if (this.selectedInput != undefined) {
+            this.tagService.createAlarm({
+                type: alarm.type == AlarmType.LOW ? 0 : 1,
+                priority: alarm.priority,
+                tagId: alarm.tagId,
+                threshold: alarm.threshold
+            }).subscribe((res) => console.log(res))
+        }
         this.clearAlarmForm()
     }
     deleteAlarm(alarm: Alarm) {
         this.alarms.splice(this.alarms.indexOf(alarm), 1)
-        // TODO Backend call
+        if (this.selectedInput != undefined) {
+            this.tagService.deleteAlarm(alarm.id).subscribe((res) => console.log(res))
+        }
     }
 
     saveInput() {
         if (this.selectedInput != undefined) {
-            this.selectedInput.Description = this.name
-            this.selectedInput.Address = Number(this.address)
-            this.selectedInput.ScanTime = Number(this.scanTime)
-            if ((this.selectedInput as AnalogInput).LowLimit != undefined) {
-                (this.selectedInput as AnalogInput).LowLimit = Number(this.unitsFrom);
-                (this.selectedInput as AnalogInput).HighLimit = Number(this.unitsTo);
-                (this.selectedInput as AnalogInput).Units = this.unit;
-                (this.selectedInput as AnalogInput).Alarms = this.alarms;
-                (this.selectedInput as AnalogInput).Function = this.func
+            this.selectedInput.description = this.name
+            this.selectedInput.address = Number(this.address)
+            this.selectedInput.scanTime = Number(this.scanTime)
+            if ((this.selectedInput as AnalogInput).lowLimit != undefined) {
+                (this.selectedInput as AnalogInput).lowLimit = Number(this.unitsFrom);
+                (this.selectedInput as AnalogInput).highLimit = Number(this.unitsTo);
+                (this.selectedInput as AnalogInput).units = this.unit;
+                (this.selectedInput as AnalogInput).alarms = this.alarms;
+                (this.selectedInput as AnalogInput).function = this.func
+            }
+            if ((this.selectedInput as AnalogInput).lowLimit != undefined){
+                this.tagService.updateAnalogInput({
+                    description: this.selectedInput.description,
+                    address: this.selectedInput.address,
+                    scanTime: this.selectedInput.scanTime,
+                    function: (this.selectedInput as AnalogInput).function,
+                    lowLimit: (this.selectedInput as AnalogInput).lowLimit,
+                    highLimit: (this.selectedInput as AnalogInput).highLimit,
+                    units: (this.selectedInput as AnalogInput).units
+                }, this.selectedInput.id).subscribe((res) => {
+                    console.log(res)
+                })
+            }
+            else {
+                this.tagService.updateDigitalInput({
+                    description: this.selectedInput.description,
+                    address: this.selectedInput.address,
+                    scanTime: this.selectedInput.scanTime,
+                }, this.selectedInput.id).subscribe((res) => {
+                    console.log(res)
+                })
             }
             this.closeForm()
             return
         }
         if (this.selectedType == InputType.ANALOG) {
-            this.items.AnalogInputs.push({
-                Id: 0,
-                Description: this.name,
-                Address: Number(this.address),
-                ScanTime: Number(this.scanTime),
-                IsOn: true,
-                CurrentValue: Number(this.unitsFrom),
-                ReadTime: '',
-                Function: this.func,
-                LowLimit: Number(this.unitsFrom),
-                HighLimit: Number(this.unitsTo),
-                Units: this.unit,
-                Alarms: this.alarms
+            let alarmsCopy = this.alarms
+            this.tagService.createAnalogInput({
+                description: this.name,
+                address: Number(this.address),
+                scanTime: Number(this.scanTime),
+                function: this.func,
+                lowLimit: Number(this.unitsFrom),
+                highLimit: Number(this.unitsTo),
+                units: this.unit
+            }).subscribe((res) => {
+                console.log(res)
+                alarmsCopy.forEach((alarm) => {
+                    alarm.tagId = res.id
+                })
+                res.alarms = alarmsCopy
+                this.items.analogInputs.push(res)
+                res.alarms.forEach((alarm) => {
+                    this.tagService.createAlarm({
+                        type: alarm.type == AlarmType.LOW ? 0 : 1,
+                        priority: alarm.priority,
+                        tagId: alarm.tagId,
+                        threshold: alarm.threshold
+                    }).subscribe((res2) => console.log(res2))
+                })
             })
             this.closeForm()
             return
         } else {
-            this.items.DigitalInputs.push({
-                Id: 0,
-                Description: this.name,
-                Address: Number(this.address),
-                ScanTime: Number(this.scanTime),
-                IsOn: true,
-                CurrentValue: 0,
-                ReadTime: ''
+            this.tagService.createDigitalInput({
+                description: this.name,
+                address: Number(this.address),
+                scanTime: Number(this.scanTime),
+            }).subscribe((res) => {
+                console.log(res)
+                this.items.digitalInputs.push(res)
             })
             this.closeForm()
             return
         }
-        // TODO Backend call on each case
     }
 
     deleteInput() {
-        if (this.selectedType == InputType.ANALOG) this.items.AnalogInputs.splice(this.items.AnalogInputs.indexOf(this.selectedInput as AnalogInput), 1)
-        else this.items.DigitalInputs.splice(this.items.DigitalInputs.indexOf(this.selectedInput as DigitalInput), 1)
+        if (this.selectedType == InputType.ANALOG){
+            this.tagService.deleteAnalogInput((this.selectedInput as AnalogInput).id).subscribe((res) => console.log(res))
+            this.items.analogInputs.splice(this.items.analogInputs.indexOf(this.selectedInput as AnalogInput), 1)
+        }
+        else {
+            this.tagService.deleteDigitalInput((this.selectedInput as DigitalInput).id).subscribe((res) => console.log(res))
+            this.items.digitalInputs.splice(this.items.digitalInputs.indexOf(this.selectedInput as DigitalInput), 1)
+        }
         this.closeForm()
-        // TODO Backend call
     }
 
-    items: TrendingState = {
-        AnalogInputs: [
-            {
-                Id: 1,
-                Description: "Outside Temp",
-                Address: 1,
-                ScanTime: 500,
-                LowLimit: 10,
-                HighLimit: 50,
-                Units: "C",
-                Alarms: [
-                    {
-                        Id: 0,
-                        Type: AlarmType.LOW,
-                        Priority: 1,
-                        TagId: 1,
-                        Threshold: 24
-                    },
-                    {
-                        Id: 1,
-                        Type: AlarmType.HIGH,
-                        Priority: 2,
-                        TagId: 1,
-                        Threshold: 28
-                    },
-                    {
-                        Id: 2,
-                        Type: AlarmType.HIGH,
-                        Priority: 3,
-                        TagId: 1,
-                        Threshold: 30
-                    }
-                ],
-                Function: "sin",
-                IsOn: true,
-                CurrentValue: 36.7,
-                ReadTime: "17:24 30s 440ms"
-            }
-            
-            
-            
-            ,{
-                Id: 0,
-                Description: "Room Temp",
-                Address: 2,
-                ScanTime: 500,
-                LowLimit: 10,
-                HighLimit: 50,
-                Units: "C",
-                Alarms: [
-                    {
-                        Id: 0,
-                        Type: AlarmType.HIGH,
-                        Priority: 1,
-                        TagId: 0,
-                        Threshold: 24
-                    },
-                    {
-                        Id: 1,
-                        Type: AlarmType.HIGH,
-                        Priority: 1,
-                        TagId: 0,
-                        Threshold: 28
-                    },
-                    {
-                        Id: 2,
-                        Type: AlarmType.HIGH,
-                        Priority: 3,
-                        TagId: 0,
-                        Threshold: 32
-                    }
-                ],
-                Function: "sin",
-                IsOn: true,
-                CurrentValue: 24.3,
-                ReadTime: "17:24 30s 340ms"
-            },
-            {
-                Id: 1,
-                Description: "Outside Temp",
-                Address: 3,
-                ScanTime: 500,
-                LowLimit: 10,
-                HighLimit: 50,
-                Units: "C",
-                Alarms: [
-                    {
-                        Id: 0,
-                        Type: AlarmType.LOW,
-                        Priority: 1,
-                        TagId: 1,
-                        Threshold: 24
-                    },
-                    {
-                        Id: 1,
-                        Type: AlarmType.HIGH,
-                        Priority: 2,
-                        TagId: 1,
-                        Threshold: 28
-                    },
-                    {
-                        Id: 2,
-                        Type: AlarmType.HIGH,
-                        Priority: 3,
-                        TagId: 1,
-                        Threshold: 30
-                    }
-                ],
-                Function: "sin",
-                IsOn: true,
-                CurrentValue: 36.7,
-                ReadTime: "17:24 30s 440ms"
-            },{
-                Id: 0,
-                Description: "Room Temp",
-                Address: 4,
-                ScanTime: 500,
-                LowLimit: 10,
-                HighLimit: 50,
-                Units: "C",
-                Alarms: [
-                    {
-                        Id: 0,
-                        Type: AlarmType.HIGH,
-                        Priority: 1,
-                        TagId: 0,
-                        Threshold: 24
-                    },
-                    {
-                        Id: 1,
-                        Type: AlarmType.HIGH,
-                        Priority: 1,
-                        TagId: 0,
-                        Threshold: 28
-                    },
-                    {
-                        Id: 2,
-                        Type: AlarmType.HIGH,
-                        Priority: 3,
-                        TagId: 0,
-                        Threshold: 32
-                    }
-                ],
-                Function: "sin",
-                IsOn: true,
-                CurrentValue: 24.3,
-                ReadTime: "17:24 30s 340ms"
-            },
-            {
-                Id: 1,
-                Description: "Outside Temp",
-                Address: 5,
-                ScanTime: 500,
-                LowLimit: 10,
-                HighLimit: 50,
-                Units: "C",
-                Alarms: [
-                    {
-                        Id: 0,
-                        Type: AlarmType.LOW,
-                        Priority: 1,
-                        TagId: 1,
-                        Threshold: 24
-                    },
-                    {
-                        Id: 1,
-                        Type: AlarmType.HIGH,
-                        Priority: 2,
-                        TagId: 1,
-                        Threshold: 28
-                    },
-                    {
-                        Id: 2,
-                        Type: AlarmType.HIGH,
-                        Priority: 3,
-                        TagId: 1,
-                        Threshold: 30
-                    }
-                ],
-                Function: "sin",
-                IsOn: true,
-                CurrentValue: 36.7,
-                ReadTime: "17:24 30s 440ms"
-            },{
-                Id: 0,
-                Description: "Room Temp",
-                Address: 6,
-                ScanTime: 500,
-                LowLimit: 10,
-                HighLimit: 50,
-                Units: "C",
-                Alarms: [
-                    {
-                        Id: 0,
-                        Type: AlarmType.HIGH,
-                        Priority: 1,
-                        TagId: 0,
-                        Threshold: 24
-                    },
-                    {
-                        Id: 1,
-                        Type: AlarmType.HIGH,
-                        Priority: 1,
-                        TagId: 0,
-                        Threshold: 28
-                    },
-                    {
-                        Id: 2,
-                        Type: AlarmType.HIGH,
-                        Priority: 3,
-                        TagId: 0,
-                        Threshold: 32
-                    }
-                ],
-                Function: "sin",
-                IsOn: true,
-                CurrentValue: 24.3,
-                ReadTime: "17:24 30s 340ms"
-            },
-            {
-                Id: 0,
-                Description: "Room Temp",
-                Address: 8,
-                ScanTime: 500,
-                LowLimit: 10,
-                HighLimit: 50,
-                Units: "C",
-                Alarms: [
-                    {
-                        Id: 0,
-                        Type: AlarmType.HIGH,
-                        Priority: 1,
-                        TagId: 0,
-                        Threshold: 24
-                    },
-                    {
-                        Id: 1,
-                        Type: AlarmType.HIGH,
-                        Priority: 1,
-                        TagId: 0,
-                        Threshold: 28
-                    },
-                    {
-                        Id: 2,
-                        Type: AlarmType.HIGH,
-                        Priority: 3,
-                        TagId: 0,
-                        Threshold: 32
-                    }
-                ],
-                Function: "sin",
-                IsOn: true,
-                CurrentValue: 24.3,
-                ReadTime: "17:24 30s 340ms"
-            },
-            {
-                Id: 1,
-                Description: "Outside Temp",
-                Address: 9,
-                ScanTime: 500,
-                LowLimit: 10,
-                HighLimit: 50,
-                Units: "C",
-                Alarms: [
-                    {
-                        Id: 0,
-                        Type: AlarmType.LOW,
-                        Priority: 1,
-                        TagId: 1,
-                        Threshold: 24
-                    },
-                    {
-                        Id: 1,
-                        Type: AlarmType.HIGH,
-                        Priority: 2,
-                        TagId: 1,
-                        Threshold: 28
-                    },
-                    {
-                        Id: 2,
-                        Type: AlarmType.HIGH,
-                        Priority: 3,
-                        TagId: 1,
-                        Threshold: 30
-                    }
-                ],
-                Function: "sin",
-                IsOn: true,
-                CurrentValue: 36.7,
-                ReadTime: "17:24 30s 440ms"
-            },{
-                Id: 0,
-                Description: "Room Temp",
-                Address: 10,
-                ScanTime: 500,
-                LowLimit: 10,
-                HighLimit: 50,
-                Units: "C",
-                Alarms: [
-                    {
-                        Id: 0,
-                        Type: AlarmType.HIGH,
-                        Priority: 1,
-                        TagId: 0,
-                        Threshold: 24
-                    },
-                    {
-                        Id: 1,
-                        Type: AlarmType.HIGH,
-                        Priority: 1,
-                        TagId: 0,
-                        Threshold: 28
-                    },
-                    {
-                        Id: 2,
-                        Type: AlarmType.HIGH,
-                        Priority: 3,
-                        TagId: 0,
-                        Threshold: 32
-                    },
-                    {
-                        Id: 1,
-                        Type: AlarmType.HIGH,
-                        Priority: 2,
-                        TagId: 1,
-                        Threshold: 28
-                    },
-                    {
-                        Id: 2,
-                        Type: AlarmType.HIGH,
-                        Priority: 3,
-                        TagId: 1,
-                        Threshold: 30
-                    }
-                ],
-                Function: "sin",
-                IsOn: true,
-                CurrentValue: 24.3,
-                ReadTime: "17:24 30s 340ms"
-            },
-            {
-                Id: 1,
-                Description: "Outside Temp",
-                Address: 12,
-                ScanTime: 500,
-                LowLimit: 10,
-                HighLimit: 50,
-                Units: "C",
-                Alarms: [
-                    {
-                        Id: 0,
-                        Type: AlarmType.LOW,
-                        Priority: 1,
-                        TagId: 1,
-                        Threshold: 24
-                    },
-                    {
-                        Id: 1,
-                        Type: AlarmType.HIGH,
-                        Priority: 2,
-                        TagId: 1,
-                        Threshold: 28
-                    },
-                    {
-                        Id: 2,
-                        Type: AlarmType.HIGH,
-                        Priority: 3,
-                        TagId: 1,
-                        Threshold: 30
-                    }
-                ],
-                Function: "sin",
-                IsOn: true,
-                CurrentValue: 36.7,
-                ReadTime: "17:24 30s 440ms"
-            },
-            {
-                Id: 1,
-                Description: "Outside Temp",
-                Address: 13,
-                ScanTime: 500,
-                LowLimit: 10,
-                HighLimit: 50,
-                Units: "C",
-                Alarms: [
-                    {
-                        Id: 0,
-                        Type: AlarmType.LOW,
-                        Priority: 1,
-                        TagId: 1,
-                        Threshold: 24
-                    },
-                    {
-                        Id: 1,
-                        Type: AlarmType.HIGH,
-                        Priority: 2,
-                        TagId: 1,
-                        Threshold: 28
-                    },
-                    {
-                        Id: 2,
-                        Type: AlarmType.HIGH,
-                        Priority: 3,
-                        TagId: 1,
-                        Threshold: 30
-                    }
-                ],
-                Function: "sin",
-                IsOn: true,
-                CurrentValue: 36.7,
-                ReadTime: "17:24 30s 440ms"
-            },
-            {
-                Id: 1,
-                Description: "Outside Temp",
-                Address: 16,
-                ScanTime: 500,
-                LowLimit: 10,
-                HighLimit: 50,
-                Units: "C",
-                Alarms: [
-                    {
-                        Id: 0,
-                        Type: AlarmType.LOW,
-                        Priority: 1,
-                        TagId: 1,
-                        Threshold: 24
-                    },
-                    {
-                        Id: 1,
-                        Type: AlarmType.HIGH,
-                        Priority: 2,
-                        TagId: 1,
-                        Threshold: 28
-                    },
-                    {
-                        Id: 2,
-                        Type: AlarmType.HIGH,
-                        Priority: 3,
-                        TagId: 1,
-                        Threshold: 30
-                    }
-                ],
-                Function: "sin",
-                IsOn: true,
-                CurrentValue: 36.7,
-                ReadTime: "17:24 30s 440ms"
-            }
-        ],
-        DigitalInputs: [
-            {
-                Id: 1,
-                Description: "Outside Lights",
-                Address: 17,
-                ScanTime: 500,
-                IsOn: true,
-                CurrentValue: 1,
-                ReadTime: "17:24 30s 440ms"
-            },
-            {
-                Id: 2,
-                Description: "Inside Lights",
-                Address: 18,
-                ScanTime: 500,
-                IsOn: true,
-                CurrentValue: 0,
-                ReadTime: "17:24 30s 440ms"
-            },
-            {
-                Id: 3,
-                Description: "Security system made by SEcUrItAS",
-                Address: 19,
-                ScanTime: 500,
-                IsOn: true,
-                CurrentValue: 0,
-                ReadTime: "17:24 30s 440ms"
-            }
-        ]
-    }
+    items : TrendingState = {analogInputs: [], digitalInputs: []}
 }

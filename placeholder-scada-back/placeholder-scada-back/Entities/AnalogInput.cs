@@ -24,9 +24,6 @@ namespace placeholder_scada_back.Entities
         [Column("scan_time")]
         public int ScanTime { get; set; }
 
-        [Column("alarms")]
-        public List<Alarm>? Alarms { get; set; }
-
         [Column("is_on")]
         public bool IsOn { get; set; }
 

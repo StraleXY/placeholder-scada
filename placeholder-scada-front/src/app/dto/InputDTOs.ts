@@ -1,42 +1,66 @@
 export interface Alarm {
-    Id: number,
-    Type: AlarmType,
-    Priority: number,
-    TagId: number,
-    Threshold: number
+    id: number,
+    type: AlarmType,
+    priority: number,
+    tagId: number,
+    threshold: number
 }
 export enum AlarmType {
     LOW, HIGH
 }
+export interface CreateAlarm {
+    type: number,
+    priority: number,
+    tagId: number,
+    threshold: number
+}
 
 export interface AnalogInput {
-    Id: number,
-    Description: string | null,
-    Address: number,
-    ScanTime: number,
-    IsOn: boolean,
-    CurrentValue: number,
-    ReadTime: string
-    Function: string
-    LowLimit: number,
-    HighLimit: number,
-    Units: string | null,
-    Alarms: Alarm[],
+    id: number,
+    description: string | null,
+    address: number,
+    scanTime: number,
+    isOn: boolean,
+    currentValue: number,
+    readTime: string
+    function: string
+    lowLimit: number,
+    highLimit: number,
+    units: string | null,
+    useRtu: boolean,
+    alarms: Alarm[]
+}
+
+export interface CreateAnalogInput {
+    description: string | null,
+    address: number,
+    scanTime: number,
+    function: string
+    lowLimit: number,
+    highLimit: number,
+    units: string | null
 }
 
 export interface DigitalInput {
-    Id: number,
-    Description: string | null,
-    Address: number,
-    ScanTime: number,
-    IsOn: boolean,
-    CurrentValue: number,
-    ReadTime: string
+    id: number,
+    description: string | null,
+    address: number,
+    scanTime: number,
+    isOn: boolean,
+    currentValue: number,
+    readTime: string,
+    useRtu: boolean
+}
+
+export interface CreateDigitalInput {
+    description: string | null,
+    address: number,
+    scanTime: number,
 }
 
 export interface TrendingState {
-    AnalogInputs: AnalogInput[],
-    DigitalInputs: DigitalInput[]
+    analogInputs: AnalogInput[],
+    digitalInputs: DigitalInput[]
 }
 
 export enum InputType {

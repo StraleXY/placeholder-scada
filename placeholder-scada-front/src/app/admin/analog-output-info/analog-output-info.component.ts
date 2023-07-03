@@ -12,12 +12,12 @@ export class AnalogOutputInfoComponent {
         this.input = item
     }
     input: AnalogOutput = {
-        Id: 0,
-        Description: "Temperatura",
-        Address: 0,
-        InitialValue: 0,
-        LowLimit: -40,
-        HighLimit: 90,
-        Units: "C",
+        id: 0,
+        description: "Temperatura",
+        address: 0,
+        initialValue: 0,
+        lowLimit: -40,
+        highLimit: 90,
+        units: "C",
     }
 }

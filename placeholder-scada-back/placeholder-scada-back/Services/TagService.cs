@@ -36,13 +36,17 @@ public class TagService : ITagService
 {
 
     public required ScadaContext Context { get; set; }
+    public required ICoreService CoreService { get; set; }
 
-    public TagService(ScadaContext scadaContext) { Context = scadaContext; }
+    public TagService(ScadaContext scadaContext, ICoreService coreService)
+    {
+        Context = scadaContext;
+        CoreService = coreService;
+    }
 
     public async Task<AnalogInput> CreateAnalogInput(CreateAnalogInputDto dto)
     {
         AnalogInput analogInput = new AnalogInput();
-        analogInput.Alarms = new List<Alarm>();
         analogInput.IsOn = true;
         analogInput.Address = dto.Address;
         analogInput.Units = dto.Units;
@@ -50,11 +54,17 @@ public class TagService : ITagService
         analogInput.HighLimit = dto.HighLimit;
         analogInput.LowLimit = dto.LowLimit;
         analogInput.ScanTime = dto.ScanTime;
-        analogInput.UseRtu = dto.UseRtu;
+        analogInput.UseRtu = false;
         analogInput.Function = dto.Function.Equals("sin") ? SimulationFunction.SINE
             : dto.Function.Equals("cos") ? SimulationFunction.COSINE : SimulationFunction.RAMP;
         EntityEntry<AnalogInput> result = await Context.AnalogInputs.AddAsync(analogInput);
         Context.SaveChanges();
+        lock (GlobalVariables.AnalogInputCacheLock)
+        {
+            GlobalVariables.AnalogInputCache[result.Entity.Id] = result.Entity;
+        }
+        CoreService.StartAnalogInput(result.Entity);
+        Thread.Sleep(100);
         return result.Entity;
     }
     public async Task<AnalogInput> OnOffScanAnalogInput(int id, bool scan)
@@ -63,6 +73,10 @@ public class TagService : ITagService
         analogInput.IsOn = scan;
         Context.AnalogInputs.Update(analogInput);
         Context.SaveChanges();
+        lock (GlobalVariables.AnalogInputCacheLock)
+        {
+            GlobalVariables.AnalogInputCache[analogInput.Id] = analogInput;
+        }
         return analogInput;
     }
     public async Task<AnalogInput> UpdateAnalogInput(CreateAnalogInputDto dto, int id)
@@ -74,11 +88,14 @@ public class TagService : ITagService
         analogInput.HighLimit = dto.HighLimit;
         analogInput.LowLimit = dto.LowLimit;
         analogInput.ScanTime = dto.ScanTime;
-        analogInput.UseRtu = dto.UseRtu;
         analogInput.Function = dto.Function.Equals("sin") ? SimulationFunction.SINE
             : dto.Function.Equals("cos") ? SimulationFunction.COSINE : SimulationFunction.RAMP;
         Context.AnalogInputs.Update(analogInput);
         Context.SaveChanges();
+        lock (GlobalVariables.AnalogInputCacheLock)
+        {
+            GlobalVariables.AnalogInputCache[analogInput.Id] = analogInput;
+        }
         return analogInput;
     }
 
@@ -87,6 +104,13 @@ public class TagService : ITagService
         AnalogInput analogInput = await Context.AnalogInputs.FirstAsync(x => x.Id == id);
         Context.AnalogInputs.Remove(analogInput);
         Context.SaveChanges();
+        lock (GlobalVariables.AnalogInputCacheLock)
+        {
+            if (GlobalVariables.AnalogInputCache.ContainsKey(analogInput.Id))
+            {
+                GlobalVariables.AnalogInputCache.Remove(analogInput.Id);
+            }
+        }
         return analogInput;
     }
 
@@ -101,6 +125,10 @@ public class TagService : ITagService
         analogOutput.Description = dto.Description;
         EntityEntry<AnalogOutput> result = await Context.AnalogOutputs.AddAsync(analogOutput);
         Context.SaveChanges();
+        lock (GlobalVariables.AnalogOutputCacheLock)
+        {
+            GlobalVariables.AnalogOutputCache[result.Entity.Id] = result.Entity;
+        }
         return result.Entity;
     }
     public async Task<AnalogOutput> UpdateAnalogOutput(CreateAnalogOutputDto dto, int id)
@@ -114,6 +142,10 @@ public class TagService : ITagService
         analogOutput.Description = dto.Description;
         Context.AnalogOutputs.Update(analogOutput);
         Context.SaveChanges();
+        lock (GlobalVariables.AnalogOutputCacheLock)
+        {
+            GlobalVariables.AnalogOutputCache[analogOutput.Id] = analogOutput;
+        }
         return analogOutput;
     }
 
@@ -122,6 +154,13 @@ public class TagService : ITagService
         AnalogOutput analogOutput = await Context.AnalogOutputs.FirstAsync(x => x.Id == id);
         Context.AnalogOutputs.Remove(analogOutput);
         Context.SaveChanges();
+        lock (GlobalVariables.AnalogOutputCacheLock)
+        {
+            if (GlobalVariables.AnalogOutputCache.ContainsKey(analogOutput.Id))
+            {
+                GlobalVariables.AnalogOutputCache.Remove(analogOutput.Id);
+            }
+        }
         return analogOutput;
     }
 
@@ -131,10 +170,16 @@ public class TagService : ITagService
         digitalInput.Address = dto.Address;
         digitalInput.Description = dto.Description;
         digitalInput.ScanTime = dto.ScanTime;
-        digitalInput.UseRtu = dto.UseRtu;
+        digitalInput.UseRtu = false;
         digitalInput.IsOn = true;
         EntityEntry<DigitalInput> result = await Context.DigitalInputs.AddAsync(digitalInput);
         Context.SaveChanges();
+        lock (GlobalVariables.DigitalInputCacheLock)
+        {
+            GlobalVariables.DigitalInputCache[result.Entity.Id] = result.Entity;
+        }
+        CoreService.StartDigitalInput(result.Entity);
+        Thread.Sleep(100);
         return result.Entity;
     }
     public async Task<DigitalInput> OnOffScanDigitalInput(int id, bool scan)
@@ -143,6 +188,10 @@ public class TagService : ITagService
         digitalInput.IsOn = scan;
         Context.DigitalInputs.Update(digitalInput);
         Context.SaveChanges();
+        lock (GlobalVariables.DigitalInputCacheLock)
+        {
+            GlobalVariables.DigitalInputCache[digitalInput.Id] = digitalInput;
+        }
         return digitalInput;
     }
     public async Task<DigitalInput> UpdateDigitalInput(CreateDigitalInputDto dto, int id)
@@ -151,9 +200,12 @@ public class TagService : ITagService
         digitalInput.Address = dto.Address;
         digitalInput.Description = dto.Description;
         digitalInput.ScanTime = dto.ScanTime;
-        digitalInput.UseRtu = dto.UseRtu;
         Context.DigitalInputs.Update(digitalInput);
         Context.SaveChanges();
+        lock (GlobalVariables.DigitalInputCacheLock)
+        {
+            GlobalVariables.DigitalInputCache[digitalInput.Id] = digitalInput;
+        }
         return digitalInput;
     }
 
@@ -162,6 +214,13 @@ public class TagService : ITagService
         DigitalInput digitalInput = await Context.DigitalInputs.FirstAsync(x => x.Id == id);
         Context.DigitalInputs.Remove(digitalInput);
         Context.SaveChanges();
+        lock (GlobalVariables.DigitalInputCacheLock)
+        {
+            if (GlobalVariables.DigitalInputCache.ContainsKey(digitalInput.Id))
+            {
+                GlobalVariables.DigitalInputCache.Remove(digitalInput.Id);
+            }
+        }
         return digitalInput;
     }
 
@@ -170,9 +229,13 @@ public class TagService : ITagService
         DigitalOutput digitalOutput = new DigitalOutput();
         digitalOutput.Address = dto.Address;
         digitalOutput.Description = dto.Description;
-        digitalOutput.InitialValue = dto.InitialValue;
+        digitalOutput.InitialValue = dto.InitialValue == 1;
         EntityEntry<DigitalOutput> result = await Context.DigitalOutputs.AddAsync(digitalOutput);
         Context.SaveChanges();
+        lock (GlobalVariables.DigitalOutputCacheLock)
+        {
+            GlobalVariables.DigitalOutputCache[result.Entity.Id] = result.Entity;
+        }
         return result.Entity;
     }
     public async Task<DigitalOutput> UpdateDigitalOutput(CreateDigitalOutputDto dto, int id)
@@ -180,9 +243,13 @@ public class TagService : ITagService
         DigitalOutput digitalOutput = await Context.DigitalOutputs.FirstAsync(x => x.Id == id);
         digitalOutput.Address = dto.Address;
         digitalOutput.Description = dto.Description;
-        digitalOutput.InitialValue = dto.InitialValue;
+        digitalOutput.InitialValue = dto.InitialValue == 1;
         Context.DigitalOutputs.Update(digitalOutput);
         Context.SaveChanges();
+        lock (GlobalVariables.DigitalOutputCacheLock)
+        {
+            GlobalVariables.DigitalOutputCache[digitalOutput.Id] = digitalOutput;
+        }
         return digitalOutput;
     }
 
@@ -191,6 +258,13 @@ public class TagService : ITagService
         DigitalOutput digitalOutput = await Context.DigitalOutputs.FirstAsync(x => x.Id == id);
         Context.DigitalOutputs.Remove(digitalOutput);
         Context.SaveChanges();
+        lock (GlobalVariables.DigitalOutputCacheLock)
+        {
+            if (GlobalVariables.DigitalOutputCache.ContainsKey(digitalOutput.Id))
+            {
+                GlobalVariables.DigitalOutputCache.Remove(digitalOutput.Id);
+            }
+        }
         return digitalOutput;
     }
 
@@ -202,9 +276,6 @@ public class TagService : ITagService
         alarm.TagId = dto.TagId;
         alarm.Type = dto.Type == 0 ? AlarmType.LOW : AlarmType.HIGH;
         EntityEntry<Alarm> result = await Context.Alarms.AddAsync(alarm);
-        AnalogInput analogInput = await Context.AnalogInputs.FirstAsync(x => x.Id == alarm.TagId);
-        analogInput.Alarms?.Add(result.Entity);
-        Context.AnalogInputs.Update(analogInput);
         Context.SaveChanges();
         return result.Entity;
     }
@@ -212,9 +283,6 @@ public class TagService : ITagService
     public async Task<Alarm> DeleteAlarm(int id)
     {
         Alarm alarm = await Context.Alarms.FirstAsync(x => x.Id == id);
-        AnalogInput analogInput = await Context.AnalogInputs.FirstAsync(x => x.Id == alarm.TagId);
-        analogInput.Alarms?.Remove(alarm);
-        Context.AnalogInputs.Update(analogInput);
         Context.Alarms.Remove(alarm);
         Context.SaveChanges();
         return alarm;
@@ -226,7 +294,8 @@ public class TagService : ITagService
         List<AnalogInputDto> result = new List<AnalogInputDto>();
         foreach (AnalogInput analogInput in analogInputs)
         {
-            result.Add(new AnalogInputDto(analogInput, 0, ""));
+            List<Alarm> alarms = Context.Alarms.Where(x => x.TagId == analogInput.Id).ToList();
+            result.Add(new AnalogInputDto(analogInput, alarms, 0, ""));
         }
         return result;
     }

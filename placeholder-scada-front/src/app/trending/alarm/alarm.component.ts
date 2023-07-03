@@ -8,11 +8,11 @@ import { Alarm, AlarmType } from 'src/app/dto/InputDTOs';
 })
 export class AlarmComponent {
     @Input() alarm: Alarm = {
-        Id: 0,
-        Type: AlarmType.LOW,
-        Priority: 1,
-        TagId: 0,
-        Threshold: 0
+        id: 0,
+        type: AlarmType.LOW,
+        priority: 1,
+        tagId: 0,
+        threshold: 0
     }
     @Input() set value(value: number | undefined) {
         if(value == undefined) {
@@ -20,8 +20,8 @@ export class AlarmComponent {
             return
         }
         if(
-            (this.alarm.Type == AlarmType.LOW && this.alarm.Threshold > value) ||
-            (this.alarm.Type == AlarmType.HIGH && this.alarm.Threshold < value)
+            (this.alarm.type == AlarmType.LOW && this.alarm.threshold > value) ||
+            (this.alarm.type == AlarmType.HIGH && this.alarm.threshold < value)
         ) this.isActive = true 
         else this.isActive = false
     }

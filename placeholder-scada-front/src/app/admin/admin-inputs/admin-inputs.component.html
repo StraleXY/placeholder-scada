@@ -17,8 +17,8 @@
     </div>
     <div class="card">
         <div class="items-container" [ngClass]="{'hidden': !isPreview, 'visible': isPreview}">
-            <div *ngIf="selectedType == 0"> <app-analog-input-info *ngFor="let item of items.AnalogInputs" [AnalogInputItem]="item" (click)="toggleEdit(item)"/> </div>
-            <div class="digital-inputs-container" *ngIf="selectedType == 1"> <app-digital-input-info *ngFor="let item of items.DigitalInputs" [DigitalInputItem]="item" (click)="toggleEdit(item)"/> </div>
+            <div *ngIf="selectedType == 0"> <app-analog-input-info *ngFor="let item of items.analogInputs" [AnalogInputItem]="item" (click)="toggleEdit(item)"/> </div>
+            <div class="digital-inputs-container" *ngIf="selectedType == 1"> <app-digital-input-info *ngFor="let item of items.digitalInputs" [DigitalInputItem]="item" (click)="toggleEdit(item)"/> </div>
         </div>
         <div class="add-edit-container" [ngClass]="{'hidden': isPreview, 'visible': !isPreview}">
 
@@ -29,7 +29,7 @@
                 <app-select [options]="addresses" [selected]="address" (onSelected)="addressSelected($event)"/>
                 <input placeholder="Scan Time [ms]" type="number" [(ngModel)]="scanTime"/>
             </div>
-            <app-select [options]="functions" [label]="'Simulator Function'" [selected]="func" (onSelected)="func = $event"/>
+            <app-select *ngIf="selectedType == 0" [options]="functions" [label]="'Simulator Function'" [selected]="func" (onSelected)="func = $event"/>
 
             <!-- Units form -->
             <h3 *ngIf="selectedType == 0">Units info</h3>
@@ -51,7 +51,7 @@
                     <div class="radio-inputs" style="width: 100%;">
                         <label class="radio">
                             <input type="radio" name="type-radio" [checked]="selectedAlarmType == 0" (click)="selectedAlarmType = 0">
-                            <span class="name">BELOVE</span>
+                            <span class="name">BELOW</span>
                         </label>
                         <label class="radio">
                             <input type="radio" name="type-radio" [checked]="selectedAlarmType == 1" (click)="selectedAlarmType = 1">

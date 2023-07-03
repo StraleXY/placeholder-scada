@@ -10,7 +10,11 @@ export class LoginService {
 
     constructor(private http: HttpClient) { }
 
-    login(user: object): Observable<object> {
-        return this.http.post<object>(`${environment.apiHost}/user/login`, user);
+    login(user: object): Observable<any> {
+        return this.http.post<any>(`${environment.apiHost}/user/login`, user);
+    }
+
+    register(user: object): Observable<any> {
+        return this.http.post<any>(`${environment.apiHost}/user/register`, user);
     }
 }

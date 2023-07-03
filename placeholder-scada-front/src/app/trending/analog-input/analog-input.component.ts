@@ -13,17 +13,18 @@ export class AnalogInputComponent {
     }
 
     input: AnalogInput = {
-        Id: 0,
-        Description: "",
-        Address: 0,
-        ScanTime: 0,
-        LowLimit: 0,
-        HighLimit: 0,
-        Units: "C",
-        Alarms: [],
-        Function: "sin",
-        IsOn: true,
-        CurrentValue: 0,
-        ReadTime: ""
+        id: 0,
+        description: "",
+        address: 0,
+        scanTime: 0,
+        lowLimit: 0,
+        highLimit: 0,
+        units: "C",
+        alarms: [],
+        function: "sin",
+        isOn: true,
+        currentValue: 0,
+        readTime: "",
+        useRtu: false,
     }
 }

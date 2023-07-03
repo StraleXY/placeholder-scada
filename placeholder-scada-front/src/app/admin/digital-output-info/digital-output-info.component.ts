@@ -13,9 +13,9 @@ export class DigitalOutputInfoComponent {
     }
     
     input: DigitalOutput = {
-        Id: 0,
-        Description: "Not Temperatura",
-        Address: 1,
-        InitialValue: 0
+        id: 0,
+        description: "Not Temperatura",
+        address: 1,
+        initialValue: 0
     }
 }

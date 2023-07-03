@@ -1,7 +1,7 @@
 <div class="alarm-contaioner"
     [ngClass]="{
-        'active-high-border' : isActive && (alarm.Priority == 2 || alarm.Priority == 3),
-        'active-critical-container' : isActive && alarm.Priority == 3
+        'active-high-border' : isActive && (alarm.priority == 2 || alarm.priority == 3),
+        'active-critical-container' : isActive && alarm.priority == 3
     }"
     (click)="onClick.emit()">
 
@@ -10,15 +10,15 @@
 
         <div class="value-container">
             <span class="material-symbols-outlined icon"
-                [ngClass]="{'active-low' : isActive && (alarm.Priority == 1 || alarm.Priority == 2) }"> {{alarm.Type == 0 ? "south" : "north"}} </span>
+                [ngClass]="{'active-low' : isActive && (alarm.priority == 1 || alarm.priority == 2) }"> {{alarm.type == 0 ? "south" : "north"}} </span>
             <p class="value-text" 
-                [ngClass]="{'active-low' : isActive && (alarm.Priority == 1 || alarm.Priority == 2) }"> {{alarm.Threshold}} </p>
+                [ngClass]="{'active-low' : isActive && (alarm.priority == 1 || alarm.priority == 2) }"> {{alarm.threshold}} </p>
         </div>
 
         <p class="priority-text"
             [ngClass]="{
-                'active-high-container' : isActive && alarm.Priority == 2,
-                'active-critical-priority-text' : isActive && alarm.Priority == 3}"> {{alarm.Priority == 1 ? "LOW" : alarm.Priority == 2 ? "HIGH" : "CRITICAL"}} </p>
+                'active-high-container' : isActive && alarm.priority == 2,
+                'active-critical-priority-text' : isActive && alarm.priority == 3}"> {{alarm.priority == 1 ? "LOW" : alarm.priority == 2 ? "HIGH" : "CRITICAL"}} </p>
     
     </div>
     

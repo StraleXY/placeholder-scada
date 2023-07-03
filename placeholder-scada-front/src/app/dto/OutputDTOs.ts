@@ -1,21 +1,41 @@
 export interface AnalogOutput {
-    Id: number,
-    Description: string | null,
-    Address: number,
-    InitialValue: number,
-    LowLimit: number,
-    HighLimit: number,
-    Units: string | null
+    id: number,
+    description: string | null,
+    address: number,
+    initialValue: number,
+    lowLimit: number,
+    highLimit: number,
+    units: string | null
 }
+export interface CreateAnalogOutput {
+    description: string | null,
+    address: number,
+    initialValue: number,
+    lowLimit: number,
+    highLimit: number,
+    units: string | null
+}
+
 export interface DigitalOutput {
-    Id: number,
-    Description: string | null,
-    Address: number,
-    InitialValue : number,
+    id: number,
+    description: string | null,
+    address: number,
+    initialValue : number,
 }
+export interface CreateDigitalOutput {
+    description: string | null,
+    address: number,
+    initialValue : number,
+}
+
 export interface RealTimeUnit {
-    Id: number,
-    IsAnalog: boolean,
-    TagId: number,
-    WriteTime: number
+    id: number,
+    isAnalog: boolean,
+    tagId: number,
+    writeTime: number
+}
+export interface CreateRealTimeUnit {
+    isAnalog: boolean,
+    tagId: number,
+    writeTime: number
 }
