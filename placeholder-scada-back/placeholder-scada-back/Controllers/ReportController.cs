@@ -17,7 +17,7 @@ public class ReportController : ControllerBase
         ReportService = reportService;
     }
 
-    [HttpGet]
+    [HttpPost]
     [Route("alarms/between")]
     public async Task<ActionResult<List<TriggeredAlarmDto>>> GetAllAlarmsInTimeSpan([FromBody] ReportAlarmsBetweenDto dto)
     {
@@ -47,7 +47,7 @@ public class ReportController : ControllerBase
         }
     }
 
-    [HttpGet]
+    [HttpPost]
     [Route("values/between")]
     public async Task<ActionResult<List<ValueDto>>> GetAllValuesInTimeSpan([FromBody] TimeSpanDto dto)
     {

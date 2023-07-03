@@ -1,0 +1,49 @@
+<div class="body">
+    <div class="items">
+        <h2>Reports</h2>
+        <app-select [options]="outputs" label="Report type" [selected]="" (onSelected)="setOutput($event)"/>
+        <div class="dates">
+            <input id="dateFrom" placeholder="From" type="datetime-local" [(ngModel)]="fromDate"/>
+            <input id="dateTo" placeholder="To" type="datetime-local" [(ngModel)]="toDate"/>
+            <input id="tagId" placeholder="Tag ID" type="text" [(ngModel)]="tagId"/>
+        </div>
+        <div class="dates">
+            <app-select id="priorities" [options]="priorities" label="Priority" [selected]="" (onSelected)="setPriority($event)"/>
+            <p id="sort-label">Sort by time</p><input id="checkbox" type="checkbox" [(ngModel)]="checkBox"/>
+            <p id="analog-label">Is analog</p><input id="checkbox" type="checkbox" [(ngModel)]="isAnalog"/>
+        </div>
+        <button class="solid-button" (click)="showReport()">Show Report</button><br><hr>
+        <table>
+                <tr *ngIf="option12">
+                    <th>Trigger time</th>
+                    <th>Tag ID</th>
+                    <th>Tag value</th>
+                    <th>Threshold</th>
+                    <th>Priority</th>
+                </tr>
+                <tr *ngIf="option3456">
+                    <th>Trigger time</th>
+                    <th>Tag ID</th>
+                    <th>Tag value</th>
+                </tr>
+                <ng-container *ngIf="option12">
+                    <tr *ngFor="let item of result">
+                            <td>{{item.time}}</td>
+                            <td>{{item.tagId}}</td>
+                            <td>{{item.tagValue}}</td>
+                            <td>
+                                <span class="material-symbols-outlined icon"
+                                [ngClass]="{'active-low' : item.type == 0 || item.type == 1}"> {{item.type == 0 ? "south" : "north"}} </span> {{item.threshold}}</td>
+                            <td>{{item.priority == 1 ? "LOW" : (item.priority == 2 ? "HIGH" : "CRITICAL")}}</td>
+                    </tr>
+                </ng-container>
+                <ng-container *ngIf="option3456">
+                    <tr *ngFor="let item of result">
+                            <td>{{item.time}}</td>
+                            <td>{{item.tagId}}</td>
+                            <td>{{item.value}}</td>
+                    </tr>
+                </ng-container>
+        </table>
+    </div>
+</div>
