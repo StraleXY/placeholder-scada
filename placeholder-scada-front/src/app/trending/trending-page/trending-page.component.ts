@@ -12,24 +12,22 @@ export class TrendingPageComponent {
 
     constructor(private coreService: CoreService) {
         let that = this
-        coreService.startSystem().subscribe((res) => {
-            console.log(res)
-            setInterval(function(){ 
-                coreService.getTrendingState().subscribe((res) => {
-                    console.log(res)
-                    that.items = res['result']
-                })
-            }, 100);
-        },
-        (err) => {
-            console.log(err)
-            setInterval(function(){ 
-                coreService.getTrendingState().subscribe((res) => {
-                    console.log(res)
-                    that.items = res['result']
-                })
-            }, 100);
-        })
+        coreService.startSystem().subscribe(
+            (res) => {
+                setInterval(function(){ 
+                    coreService.getTrendingState().subscribe((res) => {
+                        that.items = res['result']
+                    })
+                }, 100);
+            },
+            (err) => {
+                setInterval(function(){ 
+                    coreService.getTrendingState().subscribe((res) => {
+                        that.items = res['result']
+                    })
+                }, 100);
+            }
+        )
     }
 
     items: TrendingState = {analogInputs: [], digitalInputs: []}

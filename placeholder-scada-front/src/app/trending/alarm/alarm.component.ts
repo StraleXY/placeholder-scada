@@ -26,5 +26,19 @@ export class AlarmComponent {
         else this.isActive = false
     }
     @Output() onClick: EventEmitter<void> = new EventEmitter()
+
+    activeTimeoutId: any = undefined
+    click() {
+        this.onClick.emit()
+        console.log(this.isEnabled);
+        
+        this.isEnabled = false
+        if(this.activeTimeoutId != undefined) clearTimeout(this.activeTimeoutId)
+        this.activeTimeoutId = setTimeout(() => {
+            this.isEnabled = true
+        }, this.alarm.priority == 1 ? 4000 : this.alarm.priority == 2 ? 2500 : 1200);
+    }
+
     isActive: boolean = false
+    isEnabled: boolean = true
 }

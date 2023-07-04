@@ -6,7 +6,7 @@
             <p id="read-time-text">{{input.readTime}}</p>
         </div>
         <div class="value-container">
-            <p class="value-text">{{input.currentValue}}</p>
+            <p class="value-text">{{ input.currentValue | number : '1.2-2' }}</p>
             <p id="unit-text">{{input.units}}</p>
         </div>
     </div>
