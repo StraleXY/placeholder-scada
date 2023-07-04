@@ -67,8 +67,8 @@ export class RtuComponent {
     outputs: { label: string, value: AnalogOutput | DigitalOutput }[] = []
     generateOutputsList() {
         this.outputs = []
-        this.analogItems.forEach(item => { if(item.description != null && this.rtus.find(r => r.tagId == item.id) == undefined) this.outputs.push({ label: item.description, value: item }) })
-        this.digitalItems.forEach(item => { if(item.description != null && this.rtus.find(r => r.tagId == item.id) == undefined) this.outputs.push({ label: item.description, value: item }) })
+        this.analogItems.forEach(item => { if(item.description != null && this.rtus.find(r => r.tagId == item.id && r.isAnalog) == undefined) this.outputs.push({ label: item.description, value: item }) })
+        this.digitalItems.forEach(item => { if(item.description != null && this.rtus.find(r => r.tagId == item.id && !r.isAnalog) == undefined) this.outputs.push({ label: item.description, value: item }) })
         this.clearForm()
     }
 
