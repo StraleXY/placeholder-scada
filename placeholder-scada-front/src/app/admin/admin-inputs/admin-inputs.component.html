@@ -13,7 +13,11 @@
                 </label>
             </div>
         </div>
-        <button class="solid-button" (click)="toggleAdd()">{{isPreview ? "New" : "Cancel"}}</button>
+        <div style="display: flex; gap: 6px;">
+            <button *ngIf="selectedInput != undefined" style="width: 120px;" class="solid-button" (click)="toggleState()">{{selectedInput == undefined ? "NaN" : !selectedInput.isOn ? "TURN ON" : "TURN OFF"}}</button>
+            <button class="solid-button" (click)="toggleAdd()">{{isPreview ? "New" : "Cancel"}}</button>
+
+        </div>
     </div>
     <div class="card">
         <div class="items-container" [ngClass]="{'hidden': !isPreview, 'visible': isPreview}">

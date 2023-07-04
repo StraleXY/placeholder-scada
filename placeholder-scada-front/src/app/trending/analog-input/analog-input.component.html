@@ -2,10 +2,10 @@
     <div class="input-meta-data-container">
         <p id="address-text">A{{input.address}}</p>
         <div class="info-container">
-            <h3 class="title-text">{{input.description}}</h3>
+            <h3 class="title-text">{{input.isOn ? "" : "[OFF]"}} {{input.description}}</h3>
             <p id="read-time-text">{{input.readTime}}</p>
         </div>
-        <div class="value-container">
+        <div class="value-container" style="margin-top: 3px;">
             <p class="value-text">{{ input.currentValue | number : '1.2-2' }}</p>
             <p id="unit-text">{{input.units}}</p>
         </div>

@@ -229,5 +229,12 @@ export class AdminInputsComponent {
         this.closeForm()
     }
 
+    toggleState() {
+        if(this.selectedInput == undefined) return
+        this.selectedInput!.isOn = !this.selectedInput!.isOn
+        if ((this.selectedInput as AnalogInput).lowLimit != undefined) this.tagService.turnScanOnOffAnalogInput(this.selectedInput!.isOn, this.selectedInput!.id).subscribe((res) => {})
+        else this.tagService.turnScanOnOffDigitalInput(this.selectedInput!.isOn, this.selectedInput!.id).subscribe((res) => {})
+    }
+
     items : TrendingState = {analogInputs: [], digitalInputs: []}
 }
