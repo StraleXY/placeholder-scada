@@ -125,6 +125,7 @@ public class RealTimeDriver : IRealTimeDriver
         {
             StartRtu(rtu);
         }
+        Thread.Sleep(100);
     }
 
     public void Stop()
