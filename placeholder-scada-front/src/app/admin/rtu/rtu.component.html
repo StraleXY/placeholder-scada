@@ -1,34 +1,35 @@
-<div class="header-card-wrapper" style="height: 65.5vh;">
-    <div id="header">
-        <h2>RTUs</h2>
-    </div>
-    <div class="card" style="height: 100%;">
-        <!-- Add Edit -->
-        <div class="add-edit-container" [ngClass]="{'hidden': isPreview, 'visible': !isPreview}">
-            <app-select [options]="outputs" label="Output Tag" [selected]="" (onSelected)="setOutput($event)"/>
-            <input placeholder="Write Time [ms]" type="number" [(ngModel)]="writeTime"/>
-            <button class="solid-button" style="width: 130px; margin-top: 8px; align-self: self-end;" (click)="saveRTU()">Create RTU</button><br><hr>
+<div style="height: calc(100vh - 32px); display: grid; grid-template-rows: auto 292px; gap: 16px;">
+    <div class="header-card-wrapper" style="height: unset;">
+        <div id="header">
+            <h2>RTUs</h2>
         </div>
-        <div *ngFor="let rtu of rtus">
-            <div class="rtu-meta-data-container">
-                <p id="address-text">A{{getOutput(rtu).address}}</p>
-                <div class="info-container">
-                    <div>
-                        <h3 class="title-text">{{getOutput(rtu).description}}</h3>
-                        <p id="info-text">Write Time: {{rtu.writeTime}}</p>
+        <div class="card" style="height: 100%; padding-bottom: 16px; overflow-y: scroll;">
+            <!-- Add Edit -->
+            <div class="add-edit-container" [ngClass]="{'hidden': isPreview, 'visible': !isPreview}">
+                <app-select [options]="outputs" label="Output Tag" [selected]="" (onSelected)="setOutput($event)"/>
+                <input placeholder="Write Time [ms]" type="number" [(ngModel)]="writeTime"/>
+                <button class="solid-button" style="width: 130px; margin-top: 8px; align-self: self-end;" (click)="saveRTU()">Create RTU</button><br><hr>
+            </div>
+            <div *ngFor="let rtu of rtus">
+                <div class="rtu-meta-data-container">
+                    <p id="address-text">A{{getOutput(rtu).address}}</p>
+                    <div class="info-container">
+                        <div>
+                            <h3 class="title-text">{{getOutput(rtu).description}}</h3>
+                            <p id="info-text">Write Time: {{rtu.writeTime}}</p>
+                        </div>
+                        <span class="material-symbols-outlined icon" style="cursor: pointer;" (click)="deletRTU(rtu)">delete</span>
                     </div>
-                    <span class="material-symbols-outlined icon" style="cursor: pointer;" (click)="deletRTU(rtu)">delete</span>
                 </div>
             </div>
         </div>
     </div>
-</div>
-<br>
-<div class="header-card-wrapper" style="height: 18vh;">
-    <div id="header">
-        <h2>Register</h2>
-    </div>
-    <div class="card" style="height: 95%;">
-        <app-register />
+    <div class="header-card-wrapper" style="height: unset;">
+        <div id="header">
+            <h2>Register</h2>
+        </div>
+        <div class="card" style="height: 240px;">
+            <app-register />
+        </div>
     </div>
 </div>
