@@ -1,8 +1,8 @@
-<div class="header-card-wrapper">
+<div class="header-card-wrapper" style="height: 65.5vh;">
     <div id="header">
         <h2>RTUs</h2>
     </div>
-    <div class="card">
+    <div class="card" style="height: 100%;">
         <!-- Add Edit -->
         <div class="add-edit-container" [ngClass]="{'hidden': isPreview, 'visible': !isPreview}">
             <app-select [options]="outputs" label="Output Tag" [selected]="" (onSelected)="setOutput($event)"/>
@@ -21,6 +21,14 @@
                 </div>
             </div>
         </div>
+    </div>
+</div>
+<br>
+<div class="header-card-wrapper" style="height: 18vh;">
+    <div id="header">
+        <h2>Register</h2>
+    </div>
+    <div class="card" style="height: 95%;">
         <app-register />
     </div>
 </div>
