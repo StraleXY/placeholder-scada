@@ -46,12 +46,12 @@ export class AdminInputsComponent {
     generateAddresses() {
         this.addresses = []
         let takenAddresses: number[] = []
-        this.items.analogInputs.forEach((input) => {
-            takenAddresses.push(input.address)
-        })
-        this.items.digitalInputs.forEach((input) => {
-            takenAddresses.push(input.address)
-        })
+        // this.items.analogInputs.forEach((input) => {
+        //     takenAddresses.push(input.address)
+        // })
+        // this.items.digitalInputs.forEach((input) => {
+        //     takenAddresses.push(input.address)
+        // })
         for(let i = 1; i <= 20; i++) {
             if(takenAddresses.indexOf(i) == -1) 
                 this.addresses.push({ label: "Address " + i, value: i })
